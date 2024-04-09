@@ -1,6 +1,5 @@
 import './bootstrap';
 import "bootstrap/dist/js/bootstrap.min";
-import 'admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js';
 import 'flowbite';
 import { createApp } from 'vue/dist/vue.esm-bundler.js';
 import { createPinia } from 'pinia';
