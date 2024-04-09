@@ -8,8 +8,8 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('logo.png') }}">
 </head>
 
-<body class="hold-transition sidebar-mini sidebar-collapse">
-    <div id="app"></div>
+<body id="app">
 </body>
 
 </html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>

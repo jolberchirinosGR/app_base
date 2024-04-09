@@ -1,97 +1,103 @@
 <template>
-    <!-- Contenido principal -->
-    <div class="main-content">
-        <!-- Titulo del dashboard-->
-        <!-- <div class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1 class="m-0">Nuevas Incidencias</h1>
-                    </div>
+    <div class="p-4 sm:ml-64">
+        <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
+            <div class="grid grid-cols-3 gap-4 mb-4">
+                <div class="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
+                    <p class="text-2xl text-gray-400 dark:text-gray-500">
+                    <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                    </svg>
+                    </p>
+                </div>
+                <div class="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
+                    <p class="text-2xl text-gray-400 dark:text-gray-500">
+                    <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                    </svg>
+                    </p>
+                </div>
+                <div class="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
+                    <p class="text-2xl text-gray-400 dark:text-gray-500">
+                    <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                    </svg>
+                    </p>
                 </div>
             </div>
-        </div> -->
-
-        <!-- Contenido de la pagina -->
-        <div class="content">
-            <div class="container-fluid">
-                <h1> Bienvenido </h1>
+            <div class="flex items-center justify-center h-48 mb-4 rounded bg-gray-50 dark:bg-gray-800">
+                <p class="text-2xl text-gray-400 dark:text-gray-500">
+                    <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                    </svg>
+                </p>
             </div>
-        </div> <!--  Fin del conetnido -->
-    </div> <!-- Fin del contenido principal -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+                    <p class="text-2xl text-gray-400 dark:text-gray-500">
+                    <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                    </svg>
+                    </p>
+                </div>
+                <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+                    <p class="text-2xl text-gray-400 dark:text-gray-500">
+                    <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                    </svg>
+                    </p>
+                </div>
+                <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+                    <p class="text-2xl text-gray-400 dark:text-gray-500">
+                    <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                    </svg>
+                    </p>
+                </div>
+                <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+                    <p class="text-2xl text-gray-400 dark:text-gray-500">
+                    <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                    </svg>
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-center justify-center h-48 mb-4 rounded bg-gray-50 dark:bg-gray-800">
+                <p class="text-2xl text-gray-400 dark:text-gray-500">
+                    <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                    </svg>
+                </p>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+                    <p class="text-2xl text-gray-400 dark:text-gray-500">
+                    <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                    </svg>
+                    </p>
+                </div>
+                <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+                    <p class="text-2xl text-gray-400 dark:text-gray-500">
+                    <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                    </svg>
+                    </p>
+                </div>
+                <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+                    <p class="text-2xl text-gray-400 dark:text-gray-500">
+                    <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                    </svg>
+                    </p>
+                </div>
+                <div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+                    <p class="text-2xl text-gray-400 dark:text-gray-500">
+                    <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                    </svg>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
-
-<script>
-import axios from 'axios';
-import { debounce } from 'lodash';
-import { useToastr } from '../toastr.js';
-import flatpickr from "flatpickr";
-import 'flatpickr/dist/themes/light.css';
-
-export default {
-  components: {
-  },
-  data() {
-    return {
-      //Objeto para la edicion
-      equipment: {
-        name: '',
-      },
-      //Modales y titulos
-      id: 0,
-      update: false,
-      //Variables para comprobar los resultados y el total de los datos
-      equipments: [],
-      companies: [],
-      delegations: [],
-      selectDelegations: [],
-      totalEquipments: 0,
-
-      //Filtros para el listado
-      nameSearch: null,
-      domainSearch: null,
-      serialNumberSearch: null,
-      addressSearch: null,
-      installDateSearch: null,
-      companySearch: null,
-      delegationSearch: null,
-      observationsSearch: null,
-      selectedCompany: 0, //Inicializacion del select
-      selectedCompanySearch: 0, //Inicializacion del select
-      paginationNumber: 10,
-    };
-  },
-  methods: {
-    //Funcion para guardar
-    saveEquipment(){
-        const data = {
-            name: this.equipment.name,
-        };
-
-        axios.post('/web/equipments', data).then(response => {
-            $('#equipmentFormModal').modal('hide');
-            useToastr().success('¡Equipo creado exitosamente!');
-
-            this.getEquipments();
-        }).catch(error => {
-            const errors = error.response.data.errors;
-            for (const key in errors) {
-                if (errors.hasOwnProperty(key)) {
-                    const errorMessages = errors[key];
-                    for (const errorMessage of errorMessages) {
-                        useToastr().error(errorMessage);
-                    }
-                }
-            }
-        });
-    },
-  },
-  watch: {
-  },
-  created() {
-  },
-  mounted() {
-
-  }
-};
-</script>

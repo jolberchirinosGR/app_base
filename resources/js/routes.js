@@ -14,7 +14,7 @@ export default [
     {
         path: '/',
         name: 'Dashboard',
-        component: Issues,
+        component: Dashboard,
     },
 
     {
