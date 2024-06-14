@@ -12,10 +12,43 @@ class UserController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return User::all();
+        $query = User::query();
+        $pagination = 10;
+        $sortBy = $request->input('column');
+
+        //Paginacion para la tabla
+        if ($request->has('pagination')) {
+            $pagination = $request->input('pagination');
+        }
+
+        // Aplicar la búsqueda si se proporciona un término de búsqueda
+        if ($request->has('name')) {
+            $nameQuery = $request->input('name');
+            $query->where('name', 'like', "%{$nameQuery}%");
+        }
+
+        if ($request->has('email')) {
+            $emailQuery = $request->input('email');
+            $query->where('email', 'like', "%{$emailQuery}%");
+        }
+
+        if ($request->has('date')) {
+            $dateQuery = $request->input('date');
+            $query->whereDate('created_at', $dateQuery);
+        }
+
+        if($sortBy) {
+            $query->orderBy($sortBy, $request->input('order'));
+        }
+
+        // Obtener los resultados paginados
+        $users = $query->latest()->paginate($pagination);
+
+        return $users;
     }
+
 
     /**
      * Display a listing of the resource.
