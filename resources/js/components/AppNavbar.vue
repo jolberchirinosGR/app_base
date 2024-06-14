@@ -4,14 +4,14 @@
             <div class="flex items-center justify-between">
             <div class="flex items-center justify-start rtl:justify-end">
                 <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar" type="button" class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
-                    <span class="sr-only">Open sidebar</span>
+                    <span class="sr-only">Abrir Menu</span>
                     <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
+                        <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
                     </svg>
                 </button>
-                <a href="https://flowbite.com" class="flex ms-2 md:me-24">
-                <img src="https://flowbite.com/docs/images/logo.svg" class="h-8 me-3" alt="FlowBite Logo" />
-                <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Flowbite</span>
+                <a class="flex ms-2 md:me-24">
+                    <img :src="user.theme == 'dark' ? 'logow.webp' : 'logob.webp' " class="h-8 me-3" alt="FlowBite Logo" />
+                    <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Jolber Chirinos</span>
                 </a>
             </div>
             <div class="flex items-center">
@@ -25,24 +25,21 @@
                     <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown-user">
                     <div class="px-4 py-3" role="none">
                         <p class="text-sm text-gray-900 dark:text-white" role="none">
-                        Neil Sims
+                            {{ user.name }}
                         </p>
                         <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                        neil.sims@flowbite.com
+                            {{ user.email }}
                         </p>
                     </div>
                     <ul class="py-1" role="none">
                         <li>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Dashboard</a>
+                            <a @click="changeTheme" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
+                                Cambiar Tema 
+                                <span> {{user.theme === null || 'light' ? '(Sol)': '(Dark)'}}</span>
+                            </a>
                         </li>
                         <li>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Settings</a>
-                        </li>
-                        <li>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Earnings</a>
-                        </li>
-                        <li>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Sign out</a>
+                            <a @click="logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Salir</a>
                         </li>
                     </ul>
                     </div>
@@ -54,23 +51,47 @@
 </template>
 
 <script setup>
+import axios from 'axios';
 import { useAuthUserStore } from '../stores/AuthUserStore';
 import { useRouter } from 'vue-router';
+import { onMounted } from 'vue'
+import { initFlowbite } from 'flowbite'
+
+// initialize components based on data attribute selectors
+onMounted(() => {
+    initFlowbite();
+    initTheme();
+})
 
 const router = useRouter();
 const authUserStore = useAuthUserStore();
+const user = authUserStore.user;
 
 const logout = () => {
-    axios.post('/logout')
-    .then((response) => {
+    axios.post('/logout').then((response) => {
         authUserStore.user.name = '';
         router.push('/login');
     });
 };
-</script>
 
-<style>
-    .nav-separator {
-        width: 20px; /* Ancho del separador */
+const changeTheme = () => {
+    axios.get('/web/change_theme').then((response) => {
+
+        authUserStore.user.theme = response.data.theme;
+
+        initTheme();
+    });
+};
+
+const initTheme = () => {
+    authUserStore.user.theme 
+
+    if (authUserStore.user.theme == 'dark') {
+        document.documentElement.classList.add('dark');
+    } 
+        
+    if (authUserStore.user.theme == 'light' || authUserStore.user.theme == null) {
+        document.documentElement.classList.remove('dark')
     }
-</style>
+};
+</script>

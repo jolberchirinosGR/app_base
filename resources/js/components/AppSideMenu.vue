@@ -81,5 +81,6 @@ onMounted(() => {
 
 const router = useRouter();
 const authUserStore = useAuthUserStore();
+const user = authUserStore.user;
 
 </script>

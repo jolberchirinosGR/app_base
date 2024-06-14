@@ -16,6 +16,13 @@ import AppNavbar from './components/AppNavbar.vue';
 import AppFooter from './components/AppFooter.vue';
 import { useAuthUserStore } from './stores/AuthUserStore';
 import AppSideMenu from './components/AppSideMenu.vue';
+import { onMounted } from 'vue'
+import { initFlowbite } from 'flowbite'
+
+// initialize components based on data attribute selectors
+onMounted(() => {
+    initFlowbite();
+})
 
 const authUserStore = useAuthUserStore();
 </script>

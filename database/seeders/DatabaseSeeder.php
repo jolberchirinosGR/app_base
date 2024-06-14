@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Issue;
-use App\Models\LostObject;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -25,11 +23,5 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@gruporuiz.com',
             'password' => bcrypt(12345678),
         ]);
-
-        //INCIENCIAS
-        Issue::factory(10)->create();
-
-        //INCIENCIAS
-        LostObject::factory(10)->create();
     }
 }

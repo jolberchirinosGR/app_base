@@ -12,9 +12,17 @@ class UserController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        return $request->user()->only(['name', 'email']);
+        return User::all();
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function profile(Request $request)
+    {
+        return $request->user()->only(['name', 'email', 'theme']);
     }
 
     /**
@@ -110,5 +118,26 @@ class UserController extends BaseController
         $user->delete();
 
         return $this->sendResponse(null, 'Usuario eliminado exitosamente.');
+    }
+
+    /**
+     * Change theme
+     */
+    public function change_theme(Request $request)
+    {
+        $userData = $request->user();
+
+        if ($userData->theme == 'light' || $userData->theme == null) { //Si es ta en null o light pasa a dark
+            $user = User::find($request->user()->id);
+            $user->theme = 'dark';
+            $user->save();
+
+        }else{ //Si esta en dark pasa a light
+            $user = User::find($request->user()->id);
+            $user->theme = 'light';
+            $user->save();
+        }
+
+       return $user;
     }
 }
