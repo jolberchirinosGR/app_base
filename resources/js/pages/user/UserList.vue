@@ -4,127 +4,110 @@
             Listado de usuarios
         </h1>
 
-        <!-- Botón para crear nuevo usuario -->
-        <button type="button" class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">
-            <font-awesome-icon :icon="['fas', 'plus']"/>                
-            Nuevo
-        </button>
+        <fwb-button class="mr-2" gradient="green">
+          <font-awesome-icon :icon="['fas', 'plus']"/>
+          Nuevo
+        </fwb-button>
 
-        <button id="dropdownRadioButton" data-dropdown-toggle="dropdownRadio" class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
-            <svg class="w-3 h-3 text-gray-500 dark:text-gray-400 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z"/>
-            </svg>
-            Last 30 days
-            <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-            </svg>
-        </button>
+        <fwb-dropdown text="Paginación">
+          <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200">
+            <li>
+              <div class="flex items-center">
+                  <input type="radio" v-model="paginationNumber" value="10">
+                  <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">10</label>
+              </div>
+            </li>
+            <li>
+              <div class="flex items-center">
+                  <input type="radio" v-model="paginationNumber" value="25">
+                  <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">25</label>
+              </div>
+            </li>
+            <li>
+              <div class="flex items-center">
+                  <input type="radio" v-model="paginationNumber" value="50">
+                  <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">50</label>
+              </div>
+            </li>
+            <li>
+              <div class="flex items-center">
+                  <input type="radio" v-model="paginationNumber" value="100">
+                  <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">100</label>
+              </div>
+            </li>
+          </ul>
+        </fwb-dropdown>
     </div>
 
-    <!-- Dropdown menu -->
-    <div id="dropdownRadio" class="z-10 hidden w-48 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" data-popper-reference-hidden="" data-popper-escaped="" data-popper-placement="top" style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate3d(522.5px, 3847.5px, 0px);">
-        <ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownRadioButton">
-            <li>
-                <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                    <input id="filter-radio-example-1" type="radio" value="" name="filter-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                    <label for="filter-radio-example-1" class="w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Last day</label>
-                </div>
-            </li>
-            <li>
-                <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                    <input checked="" id="filter-radio-example-2" type="radio" value="" name="filter-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                    <label for="filter-radio-example-2" class="w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Last 7 days</label>
-                </div>
-            </li>
-            <li>
-                <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                    <input id="filter-radio-example-3" type="radio" value="" name="filter-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                    <label for="filter-radio-example-3" class="w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Last 30 days</label>
-                </div>
-            </li>
-            <li>
-                <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                    <input id="filter-radio-example-4" type="radio" value="" name="filter-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                    <label for="filter-radio-example-4" class="w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Last month</label>
-                </div>
-            </li>
-            <li>
-                <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                    <input id="filter-radio-example-5" type="radio" value="" name="filter-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                    <label for="filter-radio-example-5" class="w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Last year</label>
-                </div>
-            </li>
-        </ul>
-    </div>
+    <fwb-table>
+      <fwb-table-head>
+        <fwb-table-head-cell>Nombre</fwb-table-head-cell>
+        <fwb-table-head-cell>Correo</fwb-table-head-cell>
+        <fwb-table-head-cell>Creado</fwb-table-head-cell>
+        <fwb-table-head-cell>Acciones</fwb-table-head-cell>
+      </fwb-table-head>
 
-    <div class="relative overflow-x-auto">
-        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                    <th scope="col" class="px-6 py-3">
-                        Nombre
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Correo
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Creado
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Acciones
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <UserListItem v-for="(user, index) in users.data"
-                    :key="user.id"
-                    :user=user
-                    @open-update-user="updateModalUser"
-                    @open-delete-user="deleteModalUser"
-                />
-            </tbody>
-        </table>
+      <fwb-table-body>
+        <UserListItem v-for="(user, index) in users.data"
+          :key="user.id"
+          :user=user
+          @open-update-user="updateModalUser"
+          @open-delete-user="deleteModalUser"
+        />
+      </fwb-table-body>
+    </fwb-table>
 
-        <nav class="w-full flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
-            <span class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Showing <span class="font-semibold text-gray-900 dark:text-white">1-10</span> of <span class="font-semibold text-gray-900 dark:text-white">1000</span></span>
-            <ul class="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
-                <li>
-                    <a href="#" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
-                </li>
-                <li>
-                    <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
-                </li>
-                <li>
-                    <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
-                </li>
-                <li>
-                    <a href="#" aria-current="page" class="flex items-center justify-center px-3 h-8 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">3</a>
-                </li>
-                <li>
-                    <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">4</a>
-                </li>
-                <li>
-                    <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">5</a>
-                </li>
-                <li>
-            <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</a>
-                </li>
-            </ul>
-        </nav>
-    </div>
+    <nav class="w-full flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
+      <span class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
+        Viendo 
+        <span class="font-semibold text-gray-900 dark:text-white">
+          1-10
+        </span> 
+        de 
+        <span class="font-semibold text-gray-900 dark:text-white">
+          {{ users.total }}
+        </span>
+      </span>
+      <fwb-pagination  v-model="users.current_page" :total-pages="users.last_page" previous-label="<<<" next-label=">>>"></fwb-pagination>
+    </nav>
+
 </template>
 
 <script>
 import axios from 'axios';
 import { debounce } from 'lodash';
 import UserListItem from './UserListItem.vue';
-import flatpickr from "flatpickr";
-import 'flatpickr/dist/themes/light.css';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
+//Elementos del flowbite
+import {
+  FwbA,
+  FwbTable,
+  FwbTableBody,
+  FwbTableCell,
+  FwbTableHead,
+  FwbTableHeadCell,
+  FwbTableRow,
+  FwbButton,
+  FwbPagination,
+  FwbSelect,
+  FwbDropdown,
+} from 'flowbite-vue'
 
 export default {
   components: {
     UserListItem,
+    FwbA,
+    FwbTable,
+    FwbTableBody,
+    FwbTableCell,
+    FwbTableHead,
+    FwbTableHeadCell,
+    FwbTableRow,
+    FwbButton,
+    FwbPagination,
+    FwbSelect,
+    FwbDropdown,
   },
   data() {
     return {
@@ -145,13 +128,18 @@ export default {
       //Variables para comprobar los resultados y el total de los datos
       roles: [],
       users: [],
-      totalUsers: 0,
       //Filtros para el listado
       inputSearch: null,
       roleSearch: null,
       dateSearch: null,
       //Generales
       paginationNumber: 10,
+      paginationSelect: [
+        { value: '10', name: '10'},
+        { value: '25', name: '25'},
+        { value: '50', name: '50'},
+        { value: '100', name: '100'},
+      ],
       orderByColumn: '',
       orderByType: 'none', // none, asc, desc
     };
@@ -170,10 +158,7 @@ export default {
             },
         }).then((response) => {
             this.users = response.data;
-            this.totalUsers = this.users.data.length;
-
             console.log(this.users);
-            console.log(this.totalUsers);
         });
     },
 
@@ -241,22 +226,6 @@ export default {
   },
   mounted() {
     initFlowbite();
-
-    flatpickr(".flatpickr", {
-        enableTime: false,
-        dateFormat: "Y-m-d",
-        locale: {
-        firstDayOfWeek: 1,
-        weekdays: {
-          shorthand: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
-          longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-        },
-        months: {
-          shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Оct', 'Nov', 'Dic'],
-          longhand: ['Enero', 'Febreo', 'Мarzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-        },
-      },
-    });
   }
 };
 </script>

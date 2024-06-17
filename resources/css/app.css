@@ -1,3 +1,4 @@
 /* Tailwind */
 @import 'flowbite/dist/flowbite.min.css';
 @import 'tailwindcss/tailwind.css';
+@import '/node_modules/flowbite-vue/dist/index.css';
