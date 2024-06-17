@@ -76,7 +76,7 @@
                 </tr>
             </thead>
             <tbody>
-                <TaskListItem v-for="(user, index) in users.data"
+                <UserListItem v-for="(user, index) in users.data"
                     :key="user.id"
                     :user=user
                     @open-update-user="updateModalUser"
@@ -117,14 +117,14 @@
 <script>
 import axios from 'axios';
 import { debounce } from 'lodash';
-import TaskListItem from './TaskListItem.vue';
+import UserListItem from './UserListItem.vue';
 import flatpickr from "flatpickr";
 import 'flatpickr/dist/themes/light.css';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 export default {
   components: {
-    TaskListItem,
+    UserListItem,
   },
   data() {
     return {
@@ -168,19 +168,14 @@ export default {
                 order: this.orderByType,
                 column: this.orderByColumn,
             },
-        })
-        .then((response) => {
+        }).then((response) => {
             this.users = response.data;
             this.totalUsers = this.users.data.length;
+
+            console.log(this.users);
+            console.log(this.totalUsers);
         });
     },
-
-    //Obetener roles
-    get_roles(){
-        axios.get('/web/roles').then((response) => {
-            this.roles = response.data;
-        })
-    },    
 
     //Obetener ordenación
       sortBy(column) {
@@ -215,14 +210,14 @@ export default {
       },
 
     //Funcion para recargar la tabla
-    ReloadTable(){
+      reloadTable(){
         this.getUsers();
-    },
+      },
 
     //vaciar filtro de fecha
-    dateSearchNull(){
+      dateSearchNull(){
         this.dateSearch = null;
-    }
+      }
   },
   watch: {
     inputSearch: debounce(function () {
@@ -243,7 +238,6 @@ export default {
   },
   created() {
     this.getUsers();
-    this.get_roles();
   },
   mounted() {
     initFlowbite();
