@@ -1,35 +1,59 @@
 <template>
-    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-      <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-        {{ userData.name }}
-      </th>
-      <td class="px-6 py-4">
-        {{ userData.email }}
-      </td>
-      <td class="px-6 py-4">
-        {{ getDate(userData.created_at) }}
-      </td>
-      <td class="px-6 py-4">
-        <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-          <font-awesome-icon :icon="['fas', 'edit']"/>
-          Editar
-        </button>
+  <fwb-table-row>
+    <fwb-table-cell>
+      {{ userData.name }}
+    </fwb-table-cell>
 
-        <button type="button" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
-          <font-awesome-icon :icon="['fas', 'trash']"/>
-          Eliminar
-        </button>
-      </td>
-    </tr>
+    <fwb-table-cell>
+      {{ userData.email }}
+    </fwb-table-cell>
+
+    <fwb-table-cell>
+      {{ getDate(userData.created_at) }}
+    </fwb-table-cell>
+
+    <td class="px-6 py-4">
+      <fwb-button class="mr-2" gradient="blue" @click="editModalUser(userData)">
+        <font-awesome-icon :icon="['fas', 'edit']"/>
+        Editar
+      </fwb-button>
+
+      <fwb-button class="mr-2" gradient="red" @click="deleteModalUser(userData)">
+        <font-awesome-icon :icon="['fas', 'trash']"/>
+        Eliminar
+      </fwb-button>
+    </td>
+  </fwb-table-row>
+
 </template>
   
 <script>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
+//Elementos del flowbite
+import {
+  FwbA,
+  FwbTable,
+  FwbTableBody,
+  FwbTableCell,
+  FwbTableHead,
+  FwbTableHeadCell,
+  FwbTableRow,
+  FwbButton,
+} from 'flowbite-vue'
+
   export default {
     emits: ['open-update-user', 'open-delete-user'], //Eventos que se generan en este componente
     
     components: {
+      FwbA,
+      FwbTable,
+      FwbTableBody,
+      FwbTableCell,
+      FwbTableHead,
+      FwbTableHeadCell,
+      FwbTableRow,
+      FwbButton,
     },
     props: {
       user: Object,

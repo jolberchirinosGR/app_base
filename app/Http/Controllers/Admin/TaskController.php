@@ -8,7 +8,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 
-class UserController extends BaseController
+class TaskController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -49,23 +49,6 @@ class UserController extends BaseController
         $users = $query->latest()->paginate($pagination);
 
         return $users;
-    }
-
-    /**
-     * Display a listing of the resource.
-     */
-    public function profile(Request $request)
-    {
-        return $request->user()->only(['name', 'email', 'id_role', 'theme']);
-    }
-
-    /**
-     * Display a listing of the resource.
-     */
-    public function get_all_users()
-    {
-        $users = User::all();
-        return $this->sendResponse($users, 'Usuarios encontrados exitosamente.');
     }
 
     /**
@@ -121,34 +104,5 @@ class UserController extends BaseController
         $user->delete();
 
         return $this->sendResponse(null, 'Usuario eliminado exitosamente.');
-    }
-
-    /**
-     * Change theme
-     */
-    public function change_theme(Request $request)
-    {
-        $userData = $request->user();
-
-        if ($userData->theme == 'light' || $userData->theme == null) { //Si es ta en null o light pasa a dark
-            $user = User::find($request->user()->id);
-            $user->theme = 'dark';
-            $user->save();
-
-        }else{ //Si esta en dark pasa a light
-            $user = User::find($request->user()->id);
-            $user->theme = 'light';
-            $user->save();
-        }
-
-       return $user;
-    }
-
-    /**
-     * Obtener todos los roles
-     */
-    public function get_roles()
-    {
-        return Role::orderBy('name', 'asc')->get();
     }
 }
