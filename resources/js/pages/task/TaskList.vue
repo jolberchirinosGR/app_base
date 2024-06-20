@@ -213,7 +213,7 @@ export default {
       },
 
     //Funcion para recargar la tabla
-    ReloadTable(){
+    reloadTable(){
         this.getUsers();
     },
 

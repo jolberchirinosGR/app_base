@@ -6,7 +6,8 @@ export const useAuthUserStore = defineStore('AuthUserStore', () => {
     const user = ref({
         name: '',
         email: '',
-        permissions: '',
+        id_role: '',
+        theme: '',
     });
 
     const getAuthUser = async () => {

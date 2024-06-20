@@ -4,7 +4,7 @@
             Listado de usuarios
         </h1>
 
-        <fwb-button class="mr-2" gradient="green">
+        <fwb-button class="mr-2" gradient="green" @click="createModalUser()">
           <font-awesome-icon :icon="['fas', 'plus']"/>
           Nuevo
         </fwb-button>
@@ -37,6 +37,29 @@
             </li>
           </ul>
         </fwb-dropdown>
+
+        <fwb-dropdown text="Roles">
+          <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200">
+            <li  v-for="(role, index) in roles">
+              <div class="flex items-center">
+                  <input type="radio" v-model="roleSearch" :value="role.id">
+                  <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ role.name }}</label>
+              </div>
+            </li>
+            <li>
+              <div class="flex items-center">
+                  <input type="radio" v-model="roleSearch" value=null>
+                  <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                    Sin filtrar
+                  </label>
+              </div>
+            </li>
+          </ul>
+        </fwb-dropdown>
+
+        <fwb-input #prefix v-model="inputSearch" placeholder="Buscador nombre o correo">
+          <font-awesome-icon :icon="['fas', 'search']"/>
+        </fwb-input>
     </div>
 
     <fwb-table>
@@ -61,22 +84,29 @@
       <span class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
         Viendo 
         <span class="font-semibold text-gray-900 dark:text-white">
-          1-10
+          {{ users.from }}
+          -
+          {{ users.to }}
         </span> 
         de 
         <span class="font-semibold text-gray-900 dark:text-white">
           {{ users.total }}
         </span>
       </span>
-      <fwb-pagination  v-model="users.current_page" :total-pages="users.last_page" previous-label="<<<" next-label=">>>"></fwb-pagination>
+      <fwb-pagination v-model="users.current_page" :total-pages="users.last_page" @page-changed="getUsers"  previous-label="<<<" next-label=">>>"></fwb-pagination>
     </nav>
 
+    <!-- Modal -->
+    <user-modals ref="userModals"
+        @reload-table="reloadTable"
+    />
 </template>
 
 <script>
 import axios from 'axios';
 import { debounce } from 'lodash';
 import UserListItem from './UserListItem.vue';
+import UserModals from './UserModals.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 //Elementos del flowbite
@@ -92,11 +122,13 @@ import {
   FwbPagination,
   FwbSelect,
   FwbDropdown,
+  FwbInput,
 } from 'flowbite-vue'
 
 export default {
   components: {
     UserListItem,
+    UserModals,
     FwbA,
     FwbTable,
     FwbTableBody,
@@ -108,6 +140,7 @@ export default {
     FwbPagination,
     FwbSelect,
     FwbDropdown,
+    FwbInput,
   },
   data() {
     return {
@@ -158,7 +191,6 @@ export default {
             },
         }).then((response) => {
             this.users = response.data;
-            console.log(this.users);
         });
     },
 
@@ -181,17 +213,17 @@ export default {
 
     // Método para abrir el modal de creación
       createModalUser() {
-        this.$refs.userModal.openFormModal(null);
+        this.$refs.userModals.openFormModal(null);
       },
 
     // Método para abrir el modal de creación
       updateModalUser(data) {
-        this.$refs.userModal.openFormModal(data);
+        this.$refs.userModals.openFormModal(data);
       },
 
     // Método para abrir el modal de creación
       deleteModalUser(data) {
-        this.$refs.userModal.openDeleteModal(data);
+        this.$refs.userModals.openDeleteModal(data);
       },
 
     //Funcion para recargar la tabla
@@ -202,10 +234,17 @@ export default {
     //vaciar filtro de fecha
       dateSearchNull(){
         this.dateSearch = null;
-      }
+      },
+
+    //Obtener todas los Roles
+      get_roles(){
+        axios.get('/web/roles').then((response) => {
+          this.roles = response.data;
+        })
+      },
   },
   watch: {
-    inputSearch: debounce(function () {
+    inputSearch: debounce(function (newVal) {
       this.getUsers();
     }, 300),
     paginationNumber: debounce(function () {
@@ -223,6 +262,7 @@ export default {
   },
   created() {
     this.getUsers();
+    this.get_roles();
   },
   mounted() {
     initFlowbite();

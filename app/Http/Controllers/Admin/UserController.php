@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\UserRequest;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class UserController extends BaseController
 {
@@ -24,14 +25,15 @@ class UserController extends BaseController
         }
 
         // Aplicar la búsqueda si se proporciona un término de búsqueda
-        if ($request->has('name')) {
-            $nameQuery = $request->input('name');
-            $query->where('name', 'like', "%{$nameQuery}%");
+        if ($request->has('search')) {
+            $searchQuery = $request->input('search');
+            $query->where('name', 'like', "%{$searchQuery}%")
+                ->orWhere('email', 'like', "%{$searchQuery}%");
         }
 
-        if ($request->has('email')) {
-            $emailQuery = $request->input('email');
-            $query->where('email', 'like', "%{$emailQuery}%");
+        if ($request->has('role')) {
+            $roleQuery = $request->input('role');
+            $roleQuery == 'null' ? null : $query->where('id_role',  $roleQuery);
         }
 
         if ($request->has('date')) {
@@ -49,19 +51,18 @@ class UserController extends BaseController
         return $users;
     }
 
-
     /**
      * Display a listing of the resource.
      */
     public function profile(Request $request)
     {
-        return $request->user()->only(['name', 'email', 'theme']);
+        return $request->user()->only(['name', 'email', 'id_role', 'theme']);
     }
 
     /**
      * Display a listing of the resource.
      */
-    public function getAllUsers()
+    public function get_all_users()
     {
         $users = User::all();
         return $this->sendResponse($users, 'Usuarios encontrados exitosamente.');
@@ -70,22 +71,13 @@ class UserController extends BaseController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError('Error de validaciones.', $validator->errors());
-        }
-
         $user = new User([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'password' => $request->input('password'),
+            'id_role' => $request->input('id_role') ?? 2, //Haciendo referencia a que es empleado
         ]);
 
         $user->save();
@@ -110,17 +102,8 @@ class UserController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UserRequest $request, string $id)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email,' . $id,
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError('Error de validaciones.', $validator->errors());
-        }
-
         $user = User::find($id);
 
         if (!$user) {
@@ -132,6 +115,7 @@ class UserController extends BaseController
         if ($request->input('password')) {
             $user->password = $request->input('password');
         }
+        $user->id_role = $request->input('id_role');
         $user->save();
 
         return $this->sendResponse($user, 'Usuario modificado exitosamente.');
@@ -172,5 +156,13 @@ class UserController extends BaseController
         }
 
        return $user;
+    }
+
+    /**
+     * Obtener todos los roles
+     */
+    public function get_roles()
+    {
+        return Role::orderBy('name', 'asc')->get();
     }
 }

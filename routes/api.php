@@ -11,7 +11,7 @@ Route::controller(RegisterController::class)->group(function(){
 });
 
 Route::middleware(['auth.api'])->group(function () {
-    Route::get('/get_users', [UserController::class, 'getAllUsers']); //Todos los datos del usuario 
+    Route::get('/get_users', [UserController::class, 'get_all_users']); //Todos los datos del usuario 
     Route::resource('/issues', IssueController::class)->except(['create', 'edit']);
 });
 
