@@ -1,12 +1,13 @@
 <template>
     <div class="block space-y-4 md:flex md:space-y-0 md:space-x-4 md:rtl:space-x-reverse" style="margin-bottom: 2%;">
         <h1 class="text-gray dark:text-white text-xl font-bold">
-            Listado de usuarios
+            <font-awesome-icon :icon="['fas', 'list-check']"/>
+            Listado de tareas
         </h1>
 
-        <fwb-button class="mr-2" gradient="green" @click="createModalUser()">
+        <fwb-button class="mr-2" gradient="green" @click="createModalTask()">
           <font-awesome-icon :icon="['fas', 'plus']"/>
-          Nuevo
+          Nueva
         </fwb-button>
 
         <fwb-dropdown text="Paginación">
@@ -38,25 +39,6 @@
           </ul>
         </fwb-dropdown>
 
-        <fwb-dropdown text="Roles">
-          <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200">
-            <li  v-for="(role, index) in roles">
-              <div class="flex items-center">
-                  <input type="radio" v-model="roleSearch" :value="role.id">
-                  <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ role.name }}</label>
-              </div>
-            </li>
-            <li>
-              <div class="flex items-center">
-                  <input type="radio" v-model="roleSearch" value=null>
-                  <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                    Sin filtrar
-                  </label>
-              </div>
-            </li>
-          </ul>
-        </fwb-dropdown>
-
         <fwb-input #prefix v-model="inputSearch" placeholder="Buscador nombre o correo">
           <font-awesome-icon :icon="['fas', 'search']"/>
         </fwb-input>
@@ -64,18 +46,19 @@
 
     <fwb-table>
       <fwb-table-head>
-        <fwb-table-head-cell>Nombre</fwb-table-head-cell>
-        <fwb-table-head-cell>Correo</fwb-table-head-cell>
-        <fwb-table-head-cell>Creado</fwb-table-head-cell>
+        <fwb-table-head-cell>Tarea</fwb-table-head-cell>
+        <fwb-table-head-cell>Descripción</fwb-table-head-cell>
+        <fwb-table-head-cell>Ejecucción</fwb-table-head-cell>
+        <fwb-table-head-cell>Estado <font-awesome-icon color="text-gray-900 dark:text-white" :icon="['fas', 'circle-info']" @click="showDeleteConfirmation"/></fwb-table-head-cell>
         <fwb-table-head-cell>Acciones</fwb-table-head-cell>
       </fwb-table-head>
 
       <fwb-table-body>
-        <UserListItem v-for="(user, index) in users.data"
-          :key="user.id"
-          :user=user
-          @open-update-user="updateModalUser"
-          @open-delete-user="deleteModalUser"
+        <TaskListItem v-for="(task, index) in tasks.data"
+          :key="task.id"
+          :task=task
+          @open-update-task="updateModalTask"
+          @open-delete-task="deleteModalTask"
         />
       </fwb-table-body>
     </fwb-table>
@@ -84,20 +67,20 @@
       <span class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
         Viendo 
         <span class="font-semibold text-gray-900 dark:text-white">
-          {{ users.from }}
+          {{ tasks.from }}
           -
-          {{ users.to }}
+          {{ tasks.to }}
         </span> 
         de 
         <span class="font-semibold text-gray-900 dark:text-white">
-          {{ users.total }}
+          {{ tasks.total }}
         </span>
       </span>
-      <fwb-pagination v-model="users.current_page" :total-pages="users.last_page" @page-changed="getUsers"  previous-label="<<<" next-label=">>>"></fwb-pagination>
+      <fwb-pagination v-model="tasks.current_page" :total-pages="tasks.last_page" @page-changed="getTasks"  previous-label="<<<" next-label=">>>"></fwb-pagination>
     </nav>
 
     <!-- Modal -->
-    <user-modals ref="userModals"
+    <task-modals ref="taskModals"
         @reload-table="reloadTable"
     />
 </template>
@@ -105,9 +88,10 @@
 <script>
 import axios from 'axios';
 import { debounce } from 'lodash';
-import UserListItem from './TaskListItem.vue';
-import UserModals from './TaskModals.vue';
+import TaskListItem from './TaskListItem.vue';
+import TaskModals from './TaskModals.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { useSweetAlert }  from '../../stores/Sweet.js';
 
 //Elementos del flowbite
 import {
@@ -127,8 +111,8 @@ import {
 
 export default {
   components: {
-    UserListItem,
-    UserModals,
+    TaskListItem,
+    TaskModals,
     FwbA,
     FwbTable,
     FwbTableBody,
@@ -145,7 +129,7 @@ export default {
   data() {
     return {
       //Objeto para la edicion
-      user: {
+      task: {
         id: '',
         name: '',
         lastname: '',
@@ -160,7 +144,7 @@ export default {
       update: false,
       //Variables para comprobar los resultados y el total de los datos
       roles: [],
-      users: [],
+      tasks: [],
       //Filtros para el listado
       inputSearch: null,
       roleSearch: null,
@@ -179,8 +163,8 @@ export default {
   },
   methods: {
     //Obtener todas los Usuarios
-    getUsers(page = 1) {
-        axios.get(`/web/users?page=${page}`, {
+    getTasks(page = 1) {
+        axios.get(`/web/tasks?page=${page}`, {
             params: {
                 search: this.inputSearch,
                 role: this.roleSearch,
@@ -190,7 +174,7 @@ export default {
                 column: this.orderByColumn,
             },
         }).then((response) => {
-            this.users = response.data;
+            this.tasks = response.data;
         });
     },
 
@@ -212,23 +196,23 @@ export default {
     },
 
     // Método para abrir el modal de creación
-      createModalUser() {
-        this.$refs.userModals.openFormModal(null);
+      createModalTask() {
+        this.$refs.taskModals.openFormModal(null);
       },
 
     // Método para abrir el modal de creación
-      updateModalUser(data) {
-        this.$refs.userModals.openFormModal(data);
+      updateModalTask(data) {
+        this.$refs.taskModals.openFormModal(data);
       },
 
     // Método para abrir el modal de creación
-      deleteModalUser(data) {
-        this.$refs.userModals.openDeleteModal(data);
+      deleteModalTask(data) {
+        this.$refs.taskModals.openDeleteModal(data);
       },
 
     //Funcion para recargar la tabla
       reloadTable(){
-        this.getUsers();
+        this.getTasks();
       },
 
     //vaciar filtro de fecha
@@ -236,33 +220,36 @@ export default {
         this.dateSearch = null;
       },
 
-    //Obtener todas los Roles
-      get_roles(){
-        axios.get('/web/roles').then((response) => {
-          this.roles = response.data;
-        })
+      //activar 
+      showDeleteConfirmation() {
+        const swal = useSweetAlert();
+            
+        swal.fire({
+          title: "Estados de las tareas",
+          text: "Explicar los estados aqui",
+          icon: "info"
+        });
       },
   },
   watch: {
     inputSearch: debounce(function (newVal) {
-      this.getUsers();
+      this.getTasks();
     }, 300),
     paginationNumber: debounce(function () {
-      this.getUsers();
+      this.getTasks();
     }, 300),
     dateSearch: debounce(function () {
-      this.getUsers();
+      this.getTasks();
     }, 300),
     roleSearch: debounce(function () {
-      this.getUsers();
+      this.getTasks();
     }, 300),
     orderByType: debounce(function () {
-      this.getUsers();
+      this.getTasks();
     }, 300),
   },
   created() {
-    this.getUsers();
-    this.get_roles();
+    this.getTasks();
   },
   mounted() {
     initFlowbite();

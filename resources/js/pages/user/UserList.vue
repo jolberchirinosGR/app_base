@@ -1,6 +1,7 @@
 <template>
     <div class="block space-y-4 md:flex md:space-y-0 md:space-x-4 md:rtl:space-x-reverse" style="margin-bottom: 2%;">
         <h1 class="text-gray dark:text-white text-xl font-bold">
+            <font-awesome-icon :icon="['fas', 'users']"/>
             Listado de usuarios
         </h1>
 

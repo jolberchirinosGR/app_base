@@ -1,24 +1,30 @@
 <template>
   <fwb-table-row>
     <fwb-table-cell>
-      {{ userData.name }}
+      {{ taskData.name }}
     </fwb-table-cell>
 
     <fwb-table-cell>
-      {{ userData.email }}
+      {{ taskData.description }}
     </fwb-table-cell>
 
     <fwb-table-cell>
-      {{ getDate(userData.created_at) }}
+      {{ taskData.date }}
+    </fwb-table-cell>
+
+    <fwb-table-cell class="text-center">
+      <strong>
+        <font-awesome-icon :class="getIconColor(taskData.status)" :icon="getIcon(taskData.status)" size="lg"/>
+      </strong>
     </fwb-table-cell>
 
     <td class="px-6 py-4">
-      <fwb-button class="mr-2" gradient="blue" @click="editModalUser(userData)">
+      <fwb-button class="mr-2" gradient="blue" @click="editModalTask(taskData)">
         <font-awesome-icon :icon="['fas', 'edit']"/>
         Editar
       </fwb-button>
 
-      <fwb-button class="mr-2" gradient="red" @click="deleteModalUser(userData)">
+      <fwb-button class="mr-2" gradient="red" @click="deleteModalTask(taskData)">
         <font-awesome-icon :icon="['fas', 'trash']"/>
         Eliminar
       </fwb-button>
@@ -43,7 +49,7 @@ import {
 } from 'flowbite-vue'
 
   export default {
-    emits: ['open-update-user', 'open-delete-user'], //Eventos que se generan en este componente
+    emits: ['open-update-task', 'open-delete-task'], //Eventos que se generan en este componente
     
     components: {
       FwbA,
@@ -56,39 +62,66 @@ import {
       FwbButton,
     },
     props: {
-      user: Object,
+      task: Object,
     },
     data() {
       return {
-        userData: this.user,
+        taskData: this.task,
         rolesAll: [],
       };
     },
     created() {
     },
     watch: {
-      user(newUser) {
-        this.userData = newUser;
+      task(newTask) {
+        this.taskData = newTask;
       },
     },
     methods: {
       // Método para abrir el modal de edición
-        editModalUser(user) {
-          this.$emit('open-update-user', user);
+        editModalTask(task) {
+          this.$emit('open-update-task', task);
         },
 
       // Método para abrir el modal de eliminación
-        deleteModalUser(user) {
-          this.$emit('open-delete-user', user);
+        deleteModalTask(task) {
+          this.$emit('open-delete-task', task);
         },
-      //Obtener fecha en formato carbon
-        getDate(date) {
-          const d = new Date(date);
-          const day = String(d.getDate()).padStart(2, '0'); // Ajusta el día a dos dígitos
-          const month = String(d.getMonth() + 1).padStart(2, '0'); // Ajusta el mes a dos dígitos
-          const year = d.getFullYear();
-          return `${day}-${month}-${year}`;
-        }
+
+      //Obtener icono dependiendo el estatus
+        getIcon(status) {
+          switch (status) {
+            case 1:
+              return ['fas', 'sync-alt'];
+              break;
+          
+            case 2:
+              return ['fas', 'ban'];
+              break;
+          
+            case 3:
+              return ['fas', 'check-double'];
+              break;
+          
+            default:
+              return ['fas', 'hourglass'];
+              break;
+          }
+        },
+
+      //Obtener icono dependiendo el estatus
+        getIconColor(status) {
+          switch (status) {
+            case 1:
+              return 'text-blue-700 dark:text-blue-400'; // Modo claro y oscuro
+            case 2:
+              return 'text-red-700 dark:text-red-400'; // Modo claro y oscuro
+            case 3:
+              return 'text-green-700 dark:text-green-400'; // Modo claro y oscuro
+            default:
+              return 'text-gray-700 dark:text-gray-400'; // Modo claro y oscuro
+          }
+        },       
     },
   };
 </script>

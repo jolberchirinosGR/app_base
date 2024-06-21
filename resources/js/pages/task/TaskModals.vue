@@ -1,68 +1,120 @@
 <template>
-  <!-- <fwb-modal v-if="isShowModal" @close="closeFormModal" persistent> -->
-    <fwb-modal v-if="isShowModal" @close="closeFormModal" persistent class="fixed top-0 left-0 right-0 z-50">
+    <fwb-modal v-if="isShowModal" @close="closeFormModal"  size="5xl" persistent class="fixed top-0 left-0 right-0 z-50">
 
      <template #header>
        <div class="flex items-center text-lg text-gray-500 dark:text-white">
         <strong>
+          <font-awesome-icon :icon="['fas', 'list-check']"/>
          {{ update ? 'Editar Tarea': 'Nueva Tarea' }}
         </strong>
        </div>
      </template>
+
+
      <template #body>
         <form class="p-4 md:p-5">
-          <div class="grid gap-4 mb-4 grid-cols-2">
-              <div class="col-span-2">
-                  <label for="nombre_del_usuario" class="label-form-custom">
-                    Nombre
-                  </label>
-                  <input type="text" name="nombre_del_usuario" id="nombre_del_usuario" v-model="user.name" class="input-form-custom" placeholder="Nombres y Apellidos" autocomplete="off">
+          <div class="grid gap-4 mb-4 grid-cols-3">
+              <div class="col-span-3">
+                <fwb-input v-model="task.name" label="Titulo de la tarea" placeholder="Ingresa el titulo de la tarea" />
+              </div>
+
+              <div class="col-span-3">
+                <fwb-textarea v-model="task.description" label="Descripción de la tarea"  placeholder="Ingresa la descripción detallada" />
+              </div>
+
+              <div class="col-span-1">
+                <label class="label-form-custom">
+                  Cuando tiene que realizar la tarea
+                </label>
+                <flat-pickr v-model="task.date" :config="dateConfig" class="input-form-custom"/>
+              </div>   
+
+              <div class="col-span-1">
+                <label class="label-form-custom">
+                  Hora de ejecución de la tarea
+                </label>
+                <flat-pickr v-model="task.hour" :config="timeConfig" class="input-form-custom"/>
+              </div>   
+
+              <div class="col-span-1">
+                <label class="label-form-custom">
+                  ¿Quieres repetir esta tarea?
+                </label>
+                <fwb-toggle v-model="task.repeat" :label="task.repeat ? 'Si' : 'No'" />
+              </div>   
+
+              <br>
+
+              <div class="col-span-3" v-if="task.repeat">
+                <label class="label-form-custom">
+                  Repetir la tarea a partir del dia seleccionado:
+                </label>
+                <div class="sm: flex space-x-4">
+                  <fwb-checkbox @click="setAllDays($event.target.checked)" label="Todos los días"/>
+                  <fwb-checkbox v-model="task.days['Lunes']" label="Lunes"/>
+                  <fwb-checkbox v-model="task.days['Martes']" label="Martes"/>
+                  <fwb-checkbox v-model="task.days['Miércoles']" label="Miércoles"/>
+                  <fwb-checkbox v-model="task.days['Jueves']" label="Jueves"/>
+                  <fwb-checkbox v-model="task.days['Viernes']" label="Viernes"/>
+                  <fwb-checkbox v-model="task.days['Sábado']" label="Sábado"/>
+                  <fwb-checkbox v-model="task.days['Domingo']" label="Domingo"/>
                 </div>
-              <div class="col-span-2 sm:col-span-1">
-                  <label for="contraseña_del_usuario" class="label-form-custom">
-                    Contraseña
-                  </label>
-                  <input type="password" name="contraseña_del_usuario" id="contraseña_del_usuario" v-model="user.password" class="input-form-custom" autocomplete="off">
               </div>
-              <div class="col-span-2 sm:col-span-1">
-                  <label for="confirmar_contraseña" class="label-form-custom">
-                    Confirmar contraseña
-                  </label>
-                  <input type="password" name="confirmar_contraseña" id="confirmar_contraseña" v-model="user.confirm_password" class="input-form-custom" autocomplete="off">
+
+              <br>
+
+              <div class="col-span-3" v-if="task.repeat">
+                <label class="label-form-custom">
+                  Selecciona el período que deseas:
+                </label>
+                <div class="sm: flex">
+                  <fwb-radio v-model="task.period" label="Proximos 7 Días" value="week"/>
+                  <fwb-radio v-model="task.period" label="Proximos 15 Días" value="2week"/>
+                  <fwb-radio v-model="task.period" label="Proximos 30 Días" value="month"/>
+                  <fwb-radio v-model="task.period" label="Todo el año" value="year"/>
+                </div>
               </div>
-              <div class="col-span-1">
-                  <label for="correo" class="label-form-custom">
-                    Correo electrónico
-                  </label>
-                  <input type="email" name="correo" id="correo"  v-model="user.email" class="input-form-custom" placeholder="Ejemplo@mail.com" autocomplete="off">
+
+              <br>
+
+              <div class="col-span-3">
+                <fwb-input v-model="inputSearch" label="Asigna usuarios a esta tarea" placeholder="Buscar usuarios por nombre" />
+
+                <!-- Resultados de la búsqueda en forma de listado -->
+                <ul v-show="inputSearch && usersAll.length > 0" class="autocomplete-results input-form-custom">
+                  <li v-for="result in usersAll" @click="addUser(result)" :key="result.id">
+                    {{ result.name }} - {{ result.email }}
+                  </li>
+                </ul>
               </div>
 
               <div class="col-span-1">
-              </div>
-
-              <div class="col-span-1">
-                  <label for="rol" class="label-form-custom">
-                    Rol
-                  </label>
-                  <select v-model="user.id_role" class="input-form-custom" required>
-                    <option v-for="rol in rolesAll" :value="rol.id" :key="rol.id">{{ rol.name }}</option>
-                  </select>              
-              </div>
-                            
+                <label class="label-form-custom">
+                  Usuarios asignados a esta tarea
+                </label>
+                <!-- Listado de usuarios ya seleccionados -->
+                <fwb-list-group>
+                  <fwb-list-group-item hover v-for="(user, index) in usersAssigned" @click="removeUser(user)" class="input-form-custom">
+                    {{ user.name }}
+                    <font-awesome-icon :icon="['fas', 'user-times']"/>
+                  </fwb-list-group-item>
+                </fwb-list-group>              
+              </div>   
           </div>
         </form>
      </template>
+
      <template #footer>
        <div class="flex justify-between">
          <fwb-button @click="closeFormModal" color="alternative">
           <font-awesome-icon :icon="['fas', 'times']"/>
            Cerrar
          </fwb-button>
-         <fwb-button  v-if="update" @click="updateUser" color="green">
+         <fwb-button  v-if="update" @click="updateTask" color="green">
           <font-awesome-icon :icon="['fas', 'edit']"/>
             Modificar
          </fwb-button>
-         <fwb-button  v-else @click="saveUser" color="green">
+         <fwb-button  v-else @click="saveTask" color="green">
           <font-awesome-icon :icon="['fas', 'save']"/>
             Guardar
          </fwb-button>
@@ -74,14 +126,22 @@
  <script>
  import axios from 'axios';
  import { debounce } from 'lodash';
- import UserListItem from './TaskListItem.vue';
+ import flatPickr from 'vue-flatpickr-component';
  import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+ import UserListItem from './TaskListItem.vue';
  import { showSuccessMessage, showErrorMessage, showErrorGroupMessages, useSweetAlert }  from '../../stores/Sweet.js';
 
  // Elementos del flowbite
  import {
    FwbModal,
    FwbButton,
+   FwbCheckbox,
+   FwbInput,
+   FwbRadio,
+   FwbTextarea,
+   FwbToggle,
+   FwbListGroup, 
+   FwbListGroupItem,
  } from 'flowbite-vue'
  
  export default {
@@ -89,51 +149,121 @@
    components: {
      UserListItem,
      FwbButton,
+     FwbCheckbox,
+     FwbInput,
      FwbModal,
+     FwbRadio,
+     FwbTextarea,
+     FwbToggle,
+     FwbListGroup, 
+     FwbListGroupItem,
+     flatPickr,
    },
    data() {
      return {
-       // Objeto para la edición
-       user: {
-         id: '',
-         name: '',
-         email: '',
-         password: '',
-         confirm_password: '',
-         id_role: '',
-       },
+       //Objeto de datos
+        task: {
+          name: '',
+          description: '',
+          date: null,
+          hour: null,
+          period: null,
+          repeat: false,
+          days: {
+            'Lunes': false,
+            'Martes': false,
+            'Miércoles': false,
+            'Jueves': false,
+            'Viernes': false,
+            'Sábado': false,
+            'Domingo': false,
+          }
+        },
        // Modales y títulos
-       id: 0,
-       errors: null,
-       rolesAll: [],
-       update: false,
-       isShowModal: false,
+        id: 0,
+        usersAll: [],
+        usersAssigned: [],
+        update: false,
+        isShowModal: false,
+        inputSearch: null,
+
+       //Configuraciones del calendario hora 
+        timeConfig: {
+          enableTime: true,
+          noCalendar: true,
+          dateFormat: "H:i",
+          time_24hr: true,
+        },
+
+       //Configuracion de calendario fecha
+        dateConfig: {
+          enableTime: false,
+          locale: {
+            firstDayOfWeek: 1,
+            weekdays: {
+              shorthand: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+              longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+            },
+            months: {
+              shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+              longhand: [
+                'Enero',
+                'Febrero',
+                'Marzo',
+                'Abril',
+                'Mayo',
+                'Junio',
+                'Julio',
+                'Agosto',
+                'Septiembre',
+                'Octubre',
+                'Noviembre',
+                'Diciembre',
+              ],
+            },
+          },
+        },
      };
    },
    methods: {
       // Limpiar formulario
         clearForm() {
-          this.user = {
+          this.task = {
             name: '',
-            email: '',
-            password: '',
-            confirm_password: '',
-            id_role: '',
+            description: '',
+            date: null,
+            hour: null,
+            period: null,
+            repeat: false,
+            days: {
+              'Lunes': false,
+              'Martes': false,
+              'Miércoles': false,
+              'Jueves': false,
+              'Viernes': false,
+              'Sábado': false,
+              'Domingo': false,
+            }
           };
           this.update = false;
+          this.usersAssigned = [];
         },
  
       // Abrir modal de editar o crear usuario
-        openFormModal(user) {
-          if (user == null) {
+        openFormModal(task) {
+          if (task == null) {
             this.clearForm();
           } else {
             this.update = true;
-            this.id = user.id ?? null;
-            this.user.id = user.id ?? null;
-            this.user.name = user.name ?? null;
-            this.user.email = user.email ?? null;
-            this.user.id_role = user.id_role ?? null;
+            this.id = task.id ?? null;
+            this.task.id = task.id ?? null;
+            this.task.name = task.name ?? null;
+            this.task.description = task.description ?? null;
+            this.task.date = task.date ?? null;
+            this.task.hour = task.hour ?? null;
+            this.task.period = task.period ?? null;
+            this.task.repeat = !!task.repeat ?? false;
+            this.task.days = task.days ?? null;
           }
           this.isShowModal = true;
         },
@@ -144,84 +274,19 @@
           this.isShowModal = false;
         },
 
-      //Obtener todas los Roles
-        get_roles(){
-            axios.get('/web/roles')
-            .then((response) => {
-                this.rolesAll = response.data;
-            })
-        },
-
-      //Guardar el usuario
-        saveUser(){
-            if (this.user.password !== this.user.confirm_password) {
-                showErrorMessage('¡La contraseña y su confirmación no coinciden!');
-            }else{
-                const data = {
-                    id: this.user.id,
-                    name: this.user.name,
-                    email: this.user.email,
-                    password: this.user.password,
-                    id_role: this.user.id_role, // Enviar el ID del rol seleccionado
-                };
-
-                axios.post('/web/users', data).then(response => {
-                    this.closeFormModal();               
-                    showSuccessMessage('¡Usuario creado exitosamente!');
-                    this.$emit('reload-table');
-                  }).catch(error => {
-                    const errors = error.response.data.errors;
-                    showErrorGroupMessages(errors)
-                });
-            }
-        },
-
-      //Funcion para actualizar
-        updateUser() {
-            const userId = this.id;
-            let passwordConfirm =  true;
-
-            const data = {
-                id: userId,
-                name: this.user.name,
-                email: this.user.email,
-                id_role: this.user.id_role, // Enviar el ID del rol seleccionado
-            };
-
-            if(this.passsword !== '' && this.confirm_password !== ''){
-                this.user.password == this.user.confirm_password
-                    ? data.password = this.user.password
-                    : passwordConfirm = false;
-            };
-
-            if (passwordConfirm) {
-                axios.put(`/web/users/${userId}`, data).then(response => {
-                    this.closeFormModal();               
-                    showSuccessMessage('¡Usuario actualizado exitosamente!');
-                    this.$emit('reload-table');
-                  })
-                .catch(error => {
-                    const errors = error.response.data.errors;
-                    showErrorGroupMessages(errors)
-                });
-            }else{
-                showErrorMessage('¡Contraseñas no coinciden!');
-            }
-        },
-
       //Abrir modal eliminar usuario
-        openDeleteModal(user) {
-            this.id = user.id;
+        openDeleteModal(task) {
+            this.id = task.id;
             this.showDeleteConfirmation();
         },
-        
+
       //Agrega una nueva función para mostrar la confirmación de eliminación con SweetAlert
         showDeleteConfirmation() {
           const swal = useSweetAlert();
             
             swal.fire({
                 title: '¡Advertencia!',
-                text: '¿Estás seguro de eliminar este usuario?',
+                text: '¿Estás seguro de eliminar esta tarea?',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
@@ -229,14 +294,35 @@
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                // Si el usuario confirma la eliminación, llamas a la función deleteUser()
-                this.deleteUser();
+                  this.deleteTask();
                 }
             });
         },
 
+      //Obtener todas los usuarios
+        getUsers(){
+          axios.get('/web/get_users', {
+            params: {
+                //Filtrar por usuarios
+                search: this.inputSearch,
+            },
+          }).then((response) => {
+              this.usersAll = response.data.data;
+          })
+        },
+
+      //Funcion
+        saveTask(){
+          console.log(this.task) 
+        },
+
+      //Funcion para actualizar
+        updateTask() {
+          console.log(this.task) 
+        },
+        
       //Funcion para eliminar
-        deleteUser() {
+        deleteTask() {
             axios.delete(`/web/users/${this.id}`,{
                 headers: {
                     Authorization: `Bearer ${this.token}`, // Include the token in the headers
@@ -250,16 +336,71 @@
                 showErrorGroupMessages(errors)
             });
         },
+
+      //Funcion para seleccionar todos los días
+        setAllDays(value){
+          this.task.days['Lunes'] = value;
+          this.task.days['Martes'] = value;
+          this.task.days['Miércoles'] = value;
+          this.task.days['Jueves'] = value;
+          this.task.days['Viernes'] = value;
+          this.task.days['Sábado'] = value;
+          this.task.days['Domingo'] = value;
+        },
+
+      //Agregar usuarios al array de seleccionados
+        addUser(user) {
+
+          //Comprobar que no este en el usuario ya asignado en el array 
+          const existInArray = this.usersAssigned.map(u => u.id == user.id); 
+
+          if (!existInArray[0]) {
+            this.usersAssigned.push(user);
+          }
+          
+          this.inputSearch = null;
+        },
+
+      //Remover usuarios del array de seleccionados
+        removeUser(user) {
+          this.usersAssigned = this.usersAssigned.filter(u => u.id !== user.id);
+        },
    },
    watch: {
- 
+    inputSearch: debounce(function () {
+      this.getUsers();
+    }, 300),
    },
    created() {
-    this.get_roles();
- 
+    this.getUsers();
    },
    mounted() {
     initFlowbite();
    }
  };
  </script>
+
+<style scoped>
+  .autocomplete-results {
+    list-style-type: none;
+    padding: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  .autocomplete-results li {
+    cursor: pointer;
+    padding: 8px;
+  }
+
+  ul {
+    padding: 0;
+    list-style-type: none;
+  }
+
+  ul li {
+    margin-bottom: 5px;
+  }
+</style>

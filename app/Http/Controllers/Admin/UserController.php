@@ -62,9 +62,21 @@ class UserController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function get_all_users()
+    public function get_all_users(Request $request)
     {
-        $users = User::all();
+        $query = User::query();
+
+        $query->orderBy('id', 'desc');
+
+        // Aplicar la búsqueda si se proporciona un término de búsqueda
+        if ($request->has('search')) {
+            $searchQuery = $request->input('search');
+            $query->where('name', 'like', "%{$searchQuery}%");
+        }
+
+        // Obtener los resultados paginados
+        $users = $query->get();
+
         return $this->sendResponse($users, 'Usuarios encontrados exitosamente.');
     }
 

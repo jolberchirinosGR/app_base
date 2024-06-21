@@ -42,4 +42,20 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Get the role that owns the user.
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'id_role');
+    }
+
+    /**
+     * Obtain the tasks that the user has.
+     */
+    public function tasks() {
+    	return $this->belongsToMany(Task::class);
+
+    }
 }

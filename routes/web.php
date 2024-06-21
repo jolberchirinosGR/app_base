@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ApplicationController;
 use Illuminate\Support\Facades\Route;
@@ -17,6 +18,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/web/users', [UserController::class, 'bulkDelete']);
     Route::get('/web/change_theme', [UserController::class, 'change_theme']);
     Route::get('/web/roles', [UserController::class, 'get_roles']);
+
+    //Tareas todos los metodos
+    Route::resource('/web/tasks', TaskController::class)->except('show');
 });
 
 Route::get('{view}', ApplicationController::class)->where('view', '(.*)')->middleware('auth');

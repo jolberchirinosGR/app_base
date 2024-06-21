@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\UserRequest;
-use App\Models\Role;
+use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -15,7 +15,7 @@ class TaskController extends BaseController
      */
     public function index(Request $request)
     {
-        $query = User::query();
+        $query = Task::query();
         $pagination = 10;
         $sortBy = $request->input('column');
 
@@ -29,11 +29,6 @@ class TaskController extends BaseController
             $searchQuery = $request->input('search');
             $query->where('name', 'like', "%{$searchQuery}%")
                 ->orWhere('email', 'like', "%{$searchQuery}%");
-        }
-
-        if ($request->has('role')) {
-            $roleQuery = $request->input('role');
-            $roleQuery == 'null' ? null : $query->where('id_role',  $roleQuery);
         }
 
         if ($request->has('date')) {
