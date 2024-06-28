@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\UserRequest;
+use App\Http\Requests\TaskRequest;
 use App\Models\Task;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class TaskController extends BaseController
@@ -19,6 +18,8 @@ class TaskController extends BaseController
         $pagination = 10;
         $sortBy = $request->input('column');
 
+        $query->with('users');
+
         //Paginacion para la tabla
         if ($request->has('pagination')) {
             $pagination = $request->input('pagination');
@@ -28,7 +29,7 @@ class TaskController extends BaseController
         if ($request->has('search')) {
             $searchQuery = $request->input('search');
             $query->where('name', 'like', "%{$searchQuery}%")
-                ->orWhere('email', 'like', "%{$searchQuery}%");
+                  ->orWhere('description', 'like', "%{$searchQuery}%");
         }
 
         if ($request->has('date')) {
@@ -41,48 +42,57 @@ class TaskController extends BaseController
         }
 
         // Obtener los resultados paginados
-        $users = $query->latest()->paginate($pagination);
+        $tasks = $query->latest()->paginate($pagination);
 
-        return $users;
+        return $tasks;
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(UserRequest $request)
+    public function store(TaskRequest $request)
     {
-        $user = new User([
+        $task = new Task([
             'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'password' => $request->input('password'),
-            'id_role' => $request->input('id_role') ?? 2, //Haciendo referencia a que es empleado
+            'description' => $request->input('description'),
+            'period' => $request->input('period'),
+            'repeat' => $request->input('repeat'),
+            'date' => $request->input('date'),
+            'hour' => $request->input('hour'),
+            'days' => json_encode($request->input('days')),
+            'status' => $request->input('status') ?? 0,
         ]);
+        $task->save();
 
-        $user->save();
+        foreach ($request['users'] as $user) {
+            $task->users()->attach($user['id']);
+        }
 
-        return $this->sendResponse($user, 'Usuario creado exitosamente.');
+        return $this->sendResponse($task, 'Tarea creada exitosamente.');
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UserRequest $request, string $id)
+    public function update(TaskRequest $request, string $id)
     {
-        $user = User::find($id);
+        $task = Task::find($id);
 
-        if (!$user) {
-            return response()->json(['error' => 'Usuario no encontrado'], 404);
+        if (!$task) {
+            return response()->json(['error' => 'Tarea no encontrada'], 404);
         }
 
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        if ($request->input('password')) {
-            $user->password = $request->input('password');
-        }
-        $user->id_role = $request->input('id_role');
-        $user->save();
+        $task->name = $request->input('name');
+        $task->description = $request->input('description');
+        $task->period = $request->input('period');
+        $task->repeat = $request->input('repeat');
+        $task->date = $request->input('date');
+        $task->hour = $request->input('hour');
+        $task->days = json_encode($request->input('days'));
+        $task->status = $request->input('status') ?? 0;
+        $task->save();
 
-        return $this->sendResponse($user, 'Usuario modificado exitosamente.');
+        return $this->sendResponse($task, 'Tarea modificada exitosamente.');
     }
 
     /**
@@ -90,14 +100,14 @@ class TaskController extends BaseController
      */
     public function destroy(string $id)
     {
-        $user = User::find($id);
+        $task = Task::find($id);
 
-        if (!$user) {
-            return $this->sendError('Usuario no encontrado');
+        if (!$task) {
+            return $this->sendError('Tarea no encontrada');
         }
 
-        $user->delete();
+        $task->delete();
 
-        return $this->sendResponse(null, 'Usuario eliminado exitosamente.');
+        return $this->sendResponse(null, 'Tarea eliminada exitosamente.');
     }
 }

@@ -128,7 +128,6 @@
  import { debounce } from 'lodash';
  import flatPickr from 'vue-flatpickr-component';
  import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
- import UserListItem from './TaskListItem.vue';
  import { showSuccessMessage, showErrorMessage, showErrorGroupMessages, useSweetAlert }  from '../../stores/Sweet.js';
 
  // Elementos del flowbite
@@ -147,7 +146,6 @@
  export default {
    emits: ['reload-table'], // Eventos que se generan en este componente
    components: {
-     UserListItem,
      FwbButton,
      FwbCheckbox,
      FwbInput,
@@ -177,7 +175,8 @@
             'Viernes': false,
             'Sábado': false,
             'Domingo': false,
-          }
+          },
+          usersAssigned: [],
         },
        // Modales y títulos
         id: 0,
@@ -263,7 +262,12 @@
             this.task.hour = task.hour ?? null;
             this.task.period = task.period ?? null;
             this.task.repeat = !!task.repeat ?? false;
-            this.task.days = task.days ?? null;
+
+            //Cargar con datos de los dias
+            let daysObject = JSON.parse(task.days);
+            this.task.days = daysObject;
+
+            this.usersAssigned = task.users;
           }
           this.isShowModal = true;
         },
@@ -311,14 +315,54 @@
           })
         },
 
-      //Funcion
+      //Guardar el usuario
         saveTask(){
-          console.log(this.task) 
+          const data = {
+            id: this.task.id,
+            name: this.task.name,
+            description: this.task.description,
+            date: this.task.date,
+            hour: this.task.hour,
+            period: this.task.period,
+            repeat: this.task.repeat,
+            days: this.task.days,
+            users: this.usersAssigned,
+          };
+
+          axios.post('/web/tasks', data).then(response => {
+              this.closeFormModal();               
+              showSuccessMessage('Tarea creado exitosamente!');
+              this.$emit('reload-table');
+            }).catch(error => {
+              const errors = error.response.data.errors;
+              showErrorGroupMessages(errors)
+          });
         },
 
       //Funcion para actualizar
         updateTask() {
-          console.log(this.task) 
+            const taskId = this.id;
+
+            const data = {
+              id: this.task.id,
+              name: this.task.name,
+              description: this.task.description,
+              date: this.task.date,
+              hour: this.task.hour,
+              period: this.task.period,
+              repeat: this.task.repeat,
+              days: this.task.days,
+            };
+
+            axios.put(`/web/tasks/${taskId}`, data).then(response => {
+                this.closeFormModal();               
+                showSuccessMessage('Tarea actualizada exitosamente!');
+                this.$emit('reload-table');
+              })
+            .catch(error => {
+                const errors = error.response.data.errors;
+                showErrorGroupMessages(errors)
+            });
         },
         
       //Funcion para eliminar

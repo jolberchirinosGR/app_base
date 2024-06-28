@@ -5,34 +5,32 @@ namespace Database\Factories;
 use App\Models\Task;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Task>
- */
 class TaskFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
     protected $model = Task::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition()
     {
+        $daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+
+        // Shuffle the days randomly
+        shuffle($daysOfWeek);
+        
+        // Select random days to be true
+        $selectedDays = array_fill_keys(array_slice($daysOfWeek, 0, mt_rand(1, count($daysOfWeek))), true);
+        $days = json_encode($selectedDays, JSON_UNESCAPED_UNICODE);
+
+        $repeat = $this->faker->boolean();
+
         return [
-            'name' => fake()->sentence(3),
-            'description' => fake()->text(150),
-            'period' => fake()->randomElement(['week', '2week', 'month', 'year']), // Changed to randomElement
-            'repeat' => fake()->boolean(),
-            'date' => fake()->date(),
-            'hour' => fake()->time(),
-            'days' => implode(',', fake()->randomElements(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], rand(1, 7))),
-            'status' => 1,
+            'name' => $this->faker->sentence(3),
+            'description' => $this->faker->text(150),
+            'period' => $this->faker->randomElement(['week', '2week', 'month', 'year']),
+            'repeat' => $repeat,
+            'date' => $this->faker->date(),
+            'hour' => $this->faker->time(),
+            'days' => $repeat ? $days : null,
+            'status' => $this->faker->randomElement([0, 1, 2, 3]),
         ];
     }
 }

@@ -40,7 +40,7 @@ class DatabaseSeeder extends Seeder
         $users = User::factory()->count(30)->create();
 
         // Crear tareas
-        $tasks = Task::factory()->count(10)->create();
+        $tasks = Task::factory()->count(25)->create();
 
         // Relacionar usuarios y tareas
         // Incluye al usuario admin y operario en la colección de usuarios para las relaciones
