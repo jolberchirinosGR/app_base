@@ -29,12 +29,11 @@ class TaskController extends BaseController
         if ($request->has('search')) {
             $searchQuery = $request->input('search');
             $query->where('name', 'like', "%{$searchQuery}%")
-                  ->orWhere('description', 'like', "%{$searchQuery}%");
-        }
-
-        if ($request->has('date')) {
-            $dateQuery = $request->input('date');
-            $query->whereDate('created_at', $dateQuery);
+                  ->orWhere('description', 'like', "%{$searchQuery}%")
+                  ->orWhere('date', 'like', "%{$searchQuery}%")
+                  ->orWhereHas('users', function ($q) use ($searchQuery) {
+                    $q->where('name', 'like', "%{$searchQuery}%");
+                  });
         }
 
         if($sortBy) {
@@ -64,6 +63,7 @@ class TaskController extends BaseController
         ]);
         $task->save();
 
+        //Actualizar relaciones con los usuarios
         foreach ($request['users'] as $user) {
             $task->users()->attach($user['id']);
         }
@@ -91,6 +91,14 @@ class TaskController extends BaseController
         $task->days = json_encode($request->input('days'));
         $task->status = $request->input('status') ?? 0;
         $task->save();
+
+        // Eliminar todas las relaciones actuales con usuarios
+        $task->users()->detach();
+
+        //Actualizar nuevas relaciones
+        foreach ($request['users'] as $user) {
+            $task->users()->attach($user['id']);
+        }
 
         return $this->sendResponse($task, 'Tarea modificada exitosamente.');
     }

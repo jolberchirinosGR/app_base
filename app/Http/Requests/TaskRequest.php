@@ -29,7 +29,7 @@ class TaskRequest extends FormRequest
             'period' => 'nullable|string|max:255',
             'repeat' => 'nullable|boolean',
             'date' => 'nullable|date',
-            'hour' => 'nullable|date_format:H:i',
+            'hour' => 'nullable|date_format:H:i:s',
             'days' => 'nullable|array|max:255',
             'status' => 'nullable|integer',
         ];
@@ -52,7 +52,7 @@ class TaskRequest extends FormRequest
             'period.max' => 'El campo período no debe exceder los 255 caracteres.',
             'repeat.boolean' => 'El campo repetir debe ser verdadero o falso.',
             'date.date' => 'El campo fecha debe ser una fecha válida.',
-            'hour.date_format' => 'El campo hora debe tener el formato HH:MM.',
+            'hour.date_format' => 'El campo hora debe tener el formato HH:MM:SS.',
             'days.array' => 'El campo días debe ser un array.',
             'days.*.boolean' => 'Cada día debe ser verdadero o falso.',
             'status.integer' => 'El campo estado debe ser un número entero.',

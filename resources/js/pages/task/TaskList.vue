@@ -39,7 +39,7 @@
           </ul>
         </fwb-dropdown>
 
-        <fwb-input #prefix v-model="inputSearch" placeholder="Buscador nombre o correo">
+        <fwb-input #prefix v-model="inputSearch" placeholder="Tarea o Descripción">
           <font-awesome-icon :icon="['fas', 'search']"/>
         </fwb-input>
     </div>

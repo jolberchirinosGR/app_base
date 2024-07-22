@@ -190,7 +190,7 @@
         timeConfig: {
           enableTime: true,
           noCalendar: true,
-          dateFormat: "H:i",
+          dateFormat: "H:i:ss",
           time_24hr: true,
         },
 
@@ -352,6 +352,7 @@
               period: this.task.period,
               repeat: this.task.repeat,
               days: this.task.days,
+              users: this.usersAssigned,
             };
 
             axios.put(`/web/tasks/${taskId}`, data).then(response => {

@@ -14,7 +14,7 @@
                     <router-link to="/tasks" class="navbar-brand">
                         <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                             <font-awesome-icon :icon="['fas', 'tasks']" style="color: #6c727f;"/>
-                        <span class="flex-1 ms-3 whitespace-nowrap">Tareas Diarias</span>
+                        <span class="flex-1 ms-3 whitespace-nowrap">Tareas</span>
                         </a>
                     </router-link>
                 </li>

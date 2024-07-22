@@ -9,7 +9,7 @@
     </fwb-table-cell>
 
     <fwb-table-cell>
-      {{ taskData.date }}
+      {{  getDate(taskData.date) }}
     </fwb-table-cell>
 
     <fwb-table-cell>
@@ -131,7 +131,15 @@ import {
             default:
               return 'text-gray-700 dark:text-gray-400'; // Modo claro y oscuro
           }
-        },       
+        },   
+      //Cambiar el formato de fecha a DD-MM-YY
+        getDate(date) {
+          const d = new Date(date);
+          const day = String(d.getDate()).padStart(2, '0'); // Ajusta el día a dos dígitos
+          const month = String(d.getMonth() + 1).padStart(2, '0'); // Ajusta el mes a dos dígitos
+          const year = d.getFullYear();
+          return `${day}-${month}-${year}`;
+        }    
     },
   };
 </script>
