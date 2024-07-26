@@ -22,12 +22,19 @@ class TaskFactory extends Factory
 
         $repeat = $this->faker->boolean();
 
+        // Generate start date in 2024
+        $start_date = $this->faker->dateTimeBetween('2024-01-01', '2024-12-31');
+
+        // Ensure end_date is after start_date
+        $end_date = $this->faker->dateTimeBetween($start_date, '2024-12-31');
+
         return [
             'name' => $this->faker->sentence(3),
             'description' => $this->faker->text(150),
             'period' => $this->faker->randomElement(['week', '2week', 'month', 'year']),
             'repeat' => $repeat,
-            'date' => $this->faker->date(),
+            'start_date' => $start_date->format('Y-m-d'),
+            'end_date' => $end_date->format('Y-m-d'),
             'hour' => $this->faker->time(),
             'days' => $repeat ? $days : null,
             'status' => $this->faker->randomElement([0, 1, 2, 3]),

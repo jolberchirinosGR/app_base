@@ -9,27 +9,33 @@
     </fwb-table-cell>
 
     <fwb-table-cell>
-      {{  getDate(taskData.date) }}
+      {{  getDate(taskData.start_date) }}
     </fwb-table-cell>
 
-    <fwb-table-cell>
+    <!-- <fwb-table-cell>
+      {{  getDate(taskData.end_date) }}
+    </fwb-table-cell> -->
+
+    <!-- <fwb-table-cell>
       <div class="flex flex-wrap gap-1">
         <fwb-badge size="sm" type="dark" v-for="(user, index) in taskData.users" :key="index">
           {{ user.name }}
         </fwb-badge>
       </div>
-    </fwb-table-cell>
+    </fwb-table-cell> -->
     
     <fwb-table-cell class="text-center">
       <strong>
         <font-awesome-icon :class="getIconColor(taskData.status)" :icon="getIcon(taskData.status)" size="lg"/>
+        <br>
+        {{getStatusName(taskData.status)}}
       </strong>
     </fwb-table-cell>
 
     <td class="px-6 py-4">
       <fwb-button class="mr-2" gradient="blue" @click="editModalTask(taskData)">
         <font-awesome-icon :icon="['fas', 'edit']"/>
-        Editar
+        Detalles
       </fwb-button>
 
       <fwb-button class="mr-2" gradient="red" @click="deleteModalTask(taskData)">
@@ -78,6 +84,7 @@ import {
       return {
         taskData: this.task,
         rolesAll: [],
+        statusAll: ['', '', '', ''],
       };
     },
     created() {
@@ -120,6 +127,27 @@ import {
         },
 
       //Obtener icono dependiendo el estatus
+        getStatusName(status) {
+          switch (status) {
+            case 1:
+              return 'En curso';
+              break;
+          
+            case 2:
+              return 'Cancelada';
+              break;
+          
+            case 3:
+              return 'Finalizado';
+              break;
+          
+            default:
+              return 'Por comenzar';
+              break;
+          }
+        },
+
+      //Obtener icono dependiendo el estatus
         getIconColor(status) {
           switch (status) {
             case 1:
@@ -132,6 +160,7 @@ import {
               return 'text-gray-700 dark:text-gray-400'; // Modo claro y oscuro
           }
         },   
+
       //Cambiar el formato de fecha a DD-MM-YY
         getDate(date) {
           const d = new Date(date);

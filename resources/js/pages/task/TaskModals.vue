@@ -1,5 +1,5 @@
 <template>
-    <fwb-modal v-if="isShowModal" @close="closeFormModal"  size="5xl" persistent class="fixed top-0 left-0 right-0 z-50">
+    <fwb-modal v-if="isShowModal" @close="closeFormModal"  size="4xl" persistent class="fixed top-0 left-0 right-0 z-50">
 
      <template #header>
        <div class="flex items-center text-lg text-gray-500 dark:text-white">
@@ -24,9 +24,9 @@
 
               <div class="col-span-1">
                 <label class="label-form-custom">
-                  Cuando tiene que realizar la tarea
+                  Fecha inicio de la tarea
                 </label>
-                <flat-pickr v-model="task.date" :config="dateConfig" class="input-form-custom"/>
+                <flat-pickr v-model="task.start_date" :config="dateConfig" class="input-form-custom"/>
               </div>   
 
               <div class="col-span-1">
@@ -43,11 +43,16 @@
                 <fwb-toggle v-model="task.repeat" :label="task.repeat ? 'Si' : 'No'" />
               </div>   
 
-              <br>
+              <!-- <div class="col-span-1" v-if="task.repeat">
+                <label class="label-form-custom">
+                  Fecha fin de la tarea
+                </label>
+                <flat-pickr v-model="task.end_date" :config="dateConfig" class="input-form-custom"/>
+              </div>    -->
 
               <div class="col-span-3" v-if="task.repeat">
                 <label class="label-form-custom">
-                  Repetir la tarea a partir del dia seleccionado:
+                  Repetir la tarea:
                 </label>
                 <div class="sm: flex space-x-4">
                   <fwb-checkbox @click="setAllDays($event.target.checked)" label="Todos los días"/>
@@ -163,7 +168,8 @@
         task: {
           name: '',
           description: '',
-          date: null,
+          start_date: null,
+          end_date: null,
           hour: null,
           period: null,
           repeat: false,
@@ -230,7 +236,8 @@
           this.task = {
             name: '',
             description: '',
-            date: null,
+            start_date: null,
+            end_date: null,
             hour: null,
             period: null,
             repeat: false,
@@ -258,7 +265,8 @@
             this.task.id = task.id ?? null;
             this.task.name = task.name ?? null;
             this.task.description = task.description ?? null;
-            this.task.date = task.date ?? null;
+            this.task.start_date = task.start_date ?? null;
+            this.task.end_date = task.end_date ?? null;
             this.task.hour = task.hour ?? null;
             this.task.period = task.period ?? null;
             this.task.repeat = !!task.repeat ?? false;
@@ -321,7 +329,8 @@
             id: this.task.id,
             name: this.task.name,
             description: this.task.description,
-            date: this.task.date,
+            start_date: this.task.start_date,
+            end_date: this.task.end_date,
             hour: this.task.hour,
             period: this.task.period,
             repeat: this.task.repeat,
@@ -347,7 +356,8 @@
               id: this.task.id,
               name: this.task.name,
               description: this.task.description,
-              date: this.task.date,
+              start_date: this.task.start_date,
+              end_date: this.task.end_date,
               hour: this.task.hour,
               period: this.task.period,
               repeat: this.task.repeat,
@@ -395,7 +405,6 @@
 
       //Agregar usuarios al array de seleccionados
         addUser(user) {
-
           //Comprobar que no este en el usuario ya asignado en el array 
           const existInArray = this.usersAssigned.map(u => u.id == user.id); 
 

@@ -19,7 +19,8 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('period')->nullable();
             $table->boolean('repeat')->default(0)->nullable();
-            $table->date('date')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->time('hour')->nullable();
             $table->string('days')->nullable();
             $table->integer('status')->default(0)->nullable();

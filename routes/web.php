@@ -20,7 +20,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/web/roles', [UserController::class, 'get_roles']);
 
     //Tareas todos los metodos
-    Route::resource('/web/tasks', TaskController::class)->except('show');
+    Route::resource('/web/tasks', TaskController::class)->except('show', 'create');
+    Route::get('/web/get_task_by_date', [TaskController::class, 'get_task_by_date']);
 });
 
 Route::get('{view}', ApplicationController::class)->where('view', '(.*)')->middleware('auth');
