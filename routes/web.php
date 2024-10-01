@@ -21,7 +21,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Tareas todos los metodos
     Route::resource('/web/tasks', TaskController::class)->except('show', 'create');
-    Route::get('/web/get_task_by_date', [TaskController::class, 'get_task_by_date']);
+    Route::get('/web/get_tasks_today', [TaskController::class, 'get_tasks_today']);
+    Route::get('/web/get_tasks_week', [TaskController::class, 'get_tasks_week']);
+    Route::get('/web/get_tasks_two_weeks', [TaskController::class, 'get_tasks_two_weeks']);
+    Route::get('/web/get_tasks_month', [TaskController::class, 'get_tasks_month']);
+    Route::get('/web/get_tasks_year', [TaskController::class, 'get_tasks_year']);
 });
 
 Route::get('{view}', ApplicationController::class)->where('view', '(.*)')->middleware('auth');

@@ -11,7 +11,7 @@ class TaskFactory extends Factory
 
     public function definition()
     {
-        $daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+        $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
         // Shuffle the days randomly
         shuffle($daysOfWeek);
@@ -31,7 +31,7 @@ class TaskFactory extends Factory
         return [
             'name' => $this->faker->sentence(3),
             'description' => $this->faker->text(150),
-            'period' => $this->faker->randomElement(['week', '2week', 'month', 'year']),
+            'period' => $this->faker->randomElement(['week', '2weeks', 'month', 'year']),
             'repeat' => $repeat,
             'start_date' => $start_date->format('Y-m-d'),
             'end_date' => $end_date->format('Y-m-d'),

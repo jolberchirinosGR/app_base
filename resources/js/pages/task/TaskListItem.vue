@@ -16,13 +16,13 @@
       {{  getDate(taskData.end_date) }}
     </fwb-table-cell> -->
 
-    <!-- <fwb-table-cell>
+    <fwb-table-cell>
       <div class="flex flex-wrap gap-1">
-        <fwb-badge size="sm" type="dark" v-for="(user, index) in taskData.users" :key="index">
+        <fwb-badge  class="dark:text-white" size="sm" type="dark" v-for="(user, index) in taskData.users" :key="index">
           {{ user.name }}
         </fwb-badge>
       </div>
-    </fwb-table-cell> -->
+    </fwb-table-cell>
     
     <fwb-table-cell class="text-center">
       <strong>

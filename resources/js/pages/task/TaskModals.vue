@@ -56,13 +56,13 @@
                 </label>
                 <div class="sm: flex space-x-4">
                   <fwb-checkbox @click="setAllDays($event.target.checked)" label="Todos los días"/>
-                  <fwb-checkbox v-model="task.days['Lunes']" label="Lunes"/>
-                  <fwb-checkbox v-model="task.days['Martes']" label="Martes"/>
-                  <fwb-checkbox v-model="task.days['Miércoles']" label="Miércoles"/>
-                  <fwb-checkbox v-model="task.days['Jueves']" label="Jueves"/>
-                  <fwb-checkbox v-model="task.days['Viernes']" label="Viernes"/>
-                  <fwb-checkbox v-model="task.days['Sábado']" label="Sábado"/>
-                  <fwb-checkbox v-model="task.days['Domingo']" label="Domingo"/>
+                  <fwb-checkbox v-model="task.days['Monday']" label="Lunes"/>
+                  <fwb-checkbox v-model="task.days['Tuesday']" label="Martes"/>
+                  <fwb-checkbox v-model="task.days['Wednesday']" label="Miércoles"/>
+                  <fwb-checkbox v-model="task.days['Thursday']" label="Jueves"/>
+                  <fwb-checkbox v-model="task.days['Friday']" label="Viernes"/>
+                  <fwb-checkbox v-model="task.days['Saturday']" label="Sábado"/>
+                  <fwb-checkbox v-model="task.days['Sunday']" label="Domingo"/>
                 </div>
               </div>
 
@@ -74,7 +74,7 @@
                 </label>
                 <div class="sm: flex">
                   <fwb-radio v-model="task.period" label="Proximos 7 Días" value="week"/>
-                  <fwb-radio v-model="task.period" label="Proximos 15 Días" value="2week"/>
+                  <fwb-radio v-model="task.period" label="Proximos 15 Días" value="2weeks"/>
                   <fwb-radio v-model="task.period" label="Proximos 30 Días" value="month"/>
                   <fwb-radio v-model="task.period" label="Todo el año" value="year"/>
                 </div>
@@ -174,13 +174,13 @@
           period: null,
           repeat: false,
           days: {
-            'Lunes': false,
-            'Martes': false,
-            'Miércoles': false,
-            'Jueves': false,
-            'Viernes': false,
-            'Sábado': false,
-            'Domingo': false,
+            'Monday': false,
+            'Tuesday': false,
+            'Wednesday': false,
+            'Thursday': false,
+            'Friday': false,
+            'Saturday': false,
+            'Sunday': false,
           },
           usersAssigned: [],
         },
@@ -207,7 +207,7 @@
             firstDayOfWeek: 1,
             weekdays: {
               shorthand: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
-              longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+              longhand: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
             },
             months: {
               shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
@@ -242,13 +242,13 @@
             period: null,
             repeat: false,
             days: {
-              'Lunes': false,
-              'Martes': false,
-              'Miércoles': false,
-              'Jueves': false,
-              'Viernes': false,
-              'Sábado': false,
-              'Domingo': false,
+              'Monday': false,
+              'Tuesday': false,
+              'Wednesday': false,
+              'Thursday': false,
+              'Friday': false,
+              'Saturday': false,
+              'Sunday': false,
             }
           };
           this.update = false;
@@ -378,13 +378,13 @@
         
       //Funcion para eliminar
         deleteTask() {
-            axios.delete(`/web/users/${this.id}`,{
+            axios.delete(`/web/tasks/${this.id}`,{
                 headers: {
                     Authorization: `Bearer ${this.token}`, // Include the token in the headers
                 },
             })
             .then(() => {
-                showSuccessMessage('¡Usuario eliminado exitosamente!');
+                showSuccessMessage('!Tarea eliminada exitosamente!');
                 this.$emit('reload-table');
             }).catch(error => {
                 const errors = error.response.data.errors;
@@ -394,13 +394,13 @@
 
       //Funcion para seleccionar todos los días
         setAllDays(value){
-          this.task.days['Lunes'] = value;
-          this.task.days['Martes'] = value;
-          this.task.days['Miércoles'] = value;
-          this.task.days['Jueves'] = value;
-          this.task.days['Viernes'] = value;
-          this.task.days['Sábado'] = value;
-          this.task.days['Domingo'] = value;
+          this.task.days['Monday'] = value;
+          this.task.days['Tuesday'] = value;
+          this.task.days['Wednesday'] = value;
+          this.task.days['Thursday'] = value;
+          this.task.days['Friday'] = value;
+          this.task.days['Saturday'] = value;
+          this.task.days['Sunday'] = value;
         },
 
       //Agregar usuarios al array de seleccionados

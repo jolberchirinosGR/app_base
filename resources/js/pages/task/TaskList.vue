@@ -50,7 +50,7 @@
         <fwb-table-head-cell>Descripción</fwb-table-head-cell>
         <fwb-table-head-cell>Fecha Inicio</fwb-table-head-cell>
         <!-- <fwb-table-head-cell>Fecha Fin</fwb-table-head-cell> -->
-        <!-- <fwb-table-head-cell>Usuarios</fwb-table-head-cell> -->
+        <fwb-table-head-cell>Usuarios</fwb-table-head-cell>
         <fwb-table-head-cell>Estado <font-awesome-icon color="text-gray-900 dark:text-white" :icon="['fas', 'circle-info']" @click="showDeleteConfirmation"/></fwb-table-head-cell>
         <fwb-table-head-cell>Acciones</fwb-table-head-cell>
       </fwb-table-head>
