@@ -1,260 +1,52 @@
 <template>
-    <div class="grid grid-cols-5 gap-4 mb-4">
-        <!-- Listado de las tareas -->
-        <fwb-card>
-            <div class="p-5">
-                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                    Pendientes Hoy:
-                </h5>
-
-                <br>
-
-                <fwb-card v-for="(task) in tasksToday" :key="task.id" class="mb-10">
-                    <div class="flex flex-col items-center p-5">
-                        <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">
-                            {{ task.name }}
-                            <fwb-badge>
-                                <template #icon>
-                                    <svg aria-hidden="true" class="mr-1 w-3 h-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" fill-rule="evenodd" />
-                                    </svg>
-                                </template>
-                                {{ task.hour }}
-                            </fwb-badge>
-                        </h5>
-                        <span class="text-sm text-gray-500 dark:text-gray-400">
-                            {{ task.description }}
-                        </span>
-                        <div class="flex mt-4 md:mt-6">
-                            <fwb-button class="mr-2" gradient="blue" @click="deleteModalUser(userData)">
-                                <font-awesome-icon :icon="['fas', 'sync']"/>
-                            </fwb-button>
-                        </div>
-                    </div>
-                </fwb-card>
+        <div class="py-8 px-4 mx-auto max-w-screen-xxl lg:py-16">
+            <div class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-8 md:p-12 mb-8">
+                <a href="#" class="bg-blue-100 text-blue-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-md dark:bg-gray-700 dark:text-blue-400 mb-2">
+                    <svg class="w-2.5 h-2.5 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 14">
+                        <path d="M11 0H2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm8.585 1.189a.994.994 0 0 0-.9-.138l-2.965.983a1 1 0 0 0-.685.949v8a1 1 0 0 0 .675.946l2.965 1.02a1.013 1.013 0 0 0 1.032-.242A1 1 0 0 0 20 12V2a1 1 0 0 0-.415-.811Z"/>
+                    </svg>
+                    Tutorial
+                </a>
+                <h1 class="text-gray-900 dark:text-white text-3xl md:text-5xl font-extrabold mb-2">How to quickly deploy a static website</h1>
+                <p class="text-lg font-normal text-gray-500 dark:text-gray-400 mb-6">Static websites are now used to bootstrap lots of websites and are becoming the basis for a variety of tools that even influence both web designers and developers.</p>
+                <a href="#" class="inline-flex justify-center items-center py-2.5 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+                    Read more
+                    <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                    </svg>
+                </a>
             </div>
-        </fwb-card>
-
-        <!-- Proxima semana -->
-        <fwb-card>
-            <div class="p-5">
-                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                    Proxima semana:
-                </h5>
-
-                <br>
-
-                <fwb-card v-for="(task) in tasksWeek" :key="task.id" class="mb-10">
-                    <div class="flex flex-col items-center p-5">
-                        <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">
-                            {{ task.name }}
-                            <fwb-badge>
-                                <template #icon>
-                                    <svg aria-hidden="true" class="mr-1 w-3 h-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" fill-rule="evenodd" />
-                                    </svg>
-                                </template>
-                                {{ task.hour }}
-                            </fwb-badge>
-                        </h5>
-                        <span class="text-sm text-gray-500 dark:text-gray-400">
-                            {{ task.description }}
-                        </span>
-                        <div class="flex mt-4 md:mt-6">
-                            <fwb-button class="mr-2" gradient="blue" @click="deleteModalUser(userData)">
-                                <font-awesome-icon :icon="['fas', 'sync']"/>
-                            </fwb-button>
-                        </div>
-                    </div>
-                </fwb-card>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-8 md:p-12">
+                    <a href="#" class="bg-green-100 text-green-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-md dark:bg-gray-700 dark:text-green-400 mb-2">
+                        <svg class="w-2.5 h-2.5 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
+                            <path d="M17 11h-2.722L8 17.278a5.512 5.512 0 0 1-.9.722H17a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1ZM6 0H1a1 1 0 0 0-1 1v13.5a3.5 3.5 0 1 0 7 0V1a1 1 0 0 0-1-1ZM3.5 15.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2ZM16.132 4.9 12.6 1.368a1 1 0 0 0-1.414 0L9 3.55v9.9l7.132-7.132a1 1 0 0 0 0-1.418Z"/>
+                        </svg>
+                        Design
+                    </a>
+                    <h2 class="text-gray-900 dark:text-white text-3xl font-extrabold mb-2">Start with Flowbite Design System</h2>
+                    <p class="text-lg font-normal text-gray-500 dark:text-gray-400 mb-4">Static websites are now used to bootstrap lots of websites and are becoming the basis for a variety of tools that even influence both web designers and developers.</p>
+                    <a href="#" class="text-blue-600 dark:text-blue-500 hover:underline font-medium text-lg inline-flex items-center">Read more
+                        <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                    </svg>
+                    </a>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-8 md:p-12">
+                    <a href="#" class="bg-purple-100 text-purple-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-md dark:bg-gray-700 dark:text-purple-400 mb-2">
+                        <svg class="w-2.5 h-2.5 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4 1 8l4 4m10-8 4 4-4 4M11 1 9 15"/>
+                        </svg>
+                        Code
+                    </a>
+                    <h2 class="text-gray-900 dark:text-white text-3xl font-extrabold mb-2">Best react libraries around the web</h2>
+                    <p class="text-lg font-normal text-gray-500 dark:text-gray-400 mb-4">Static websites are now used to bootstrap lots of websites and are becoming the basis for a variety of tools that even influence both web designers and developers.</p>
+                    <a href="#" class="text-blue-600 dark:text-blue-500 hover:underline font-medium text-lg inline-flex items-center">Read more
+                        <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                        </svg>
+                    </a>
+                </div>
             </div>
-        </fwb-card>
-
-        <!-- Dentro de 15 días -->
-        <fwb-card>
-            <div class="p-5">
-                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                    Dentro de 15 días:
-                </h5>
-
-                <br>
-
-                <fwb-card v-for="(task) in tasksTwoWeeks" :key="task.id" class="mb-10">
-                    <div class="flex flex-col items-center p-5">
-                        <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">
-                            {{ task.name }} <!-- Nombre de la tarea -->
-                            <fwb-badge> <!-- Hora de ejecucion de la tarea -->
-                                <template #icon>
-                                    <svg aria-hidden="true" class="mr-1 w-3 h-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" fill-rule="evenodd" />
-                                    </svg>
-                                </template>
-                                {{ task.hour }}
-                            </fwb-badge>
-                        </h5>
-                        <span class="text-sm text-gray-500 dark:text-gray-400">
-                            {{ task.description }} <!-- Descripcion de la tarea -->
-                        </span>
-                        <div class="flex mt-4 md:mt-6">
-                            <fwb-button class="mr-2" gradient="blue" @click="deleteModalUser(userData)">
-                                <font-awesome-icon :icon="['fas', 'sync']"/>
-                            </fwb-button>
-                        </div>
-                    </div>
-                </fwb-card>
-            </div>
-        </fwb-card>
-
-        <!-- Proximo mes -->
-        <fwb-card>
-            <div class="p-5">
-                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                    Proximo mes
-                </h5>
-
-                <br>
-
-                <fwb-card v-for="(task) in tasksMonth" :key="task.id" class="mb-10">
-                    <div class="flex flex-col items-center p-5">
-                        <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">
-                            {{ task.name }}
-                            <fwb-badge>
-                                <template #icon>
-                                    <svg aria-hidden="true" class="mr-1 w-3 h-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" fill-rule="evenodd" />
-                                    </svg>
-                                </template>
-                                {{ task.hour }}
-                            </fwb-badge>
-                        </h5>
-                        <span class="text-sm text-gray-500 dark:text-gray-400">
-                            {{ task.description }}
-                        </span>
-                        <div class="flex mt-4 md:mt-6">
-                            <fwb-button class="mr-2" gradient="blue" @click="deleteModalUser(userData)">
-                                <font-awesome-icon :icon="['fas', 'sync']"/>
-                            </fwb-button>
-                        </div>
-                    </div>
-                </fwb-card>
-            </div>
-        </fwb-card>
-
-        <!-- Restantes -->
-        <fwb-card>
-            <div class="p-5">
-                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                    Resto del año
-                </h5>
-
-                <br>
-
-                <fwb-card v-for="(task) in tasksYear" :key="task.id" class="mb-10">
-                    <div class="flex flex-col items-center p-5">
-                        <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">
-                            {{ task.name }}
-                            <fwb-badge>
-                                <template #icon>
-                                    <svg aria-hidden="true" class="mr-1 w-3 h-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" fill-rule="evenodd" />
-                                    </svg>
-                                </template>
-                                {{ task.hour }}
-                            </fwb-badge>
-                        </h5>
-                        <span class="text-sm text-gray-500 dark:text-gray-400">
-                            {{ task.description }}
-                        </span>
-                        <div class="flex mt-4 md:mt-6">
-                            <fwb-button class="mr-2" gradient="blue" @click="deleteModalUser(userData)">
-                                <font-awesome-icon :icon="['fas', 'sync']"/>
-                            </fwb-button>
-                        </div>
-                    </div>
-                </fwb-card>
-            </div>
-        </fwb-card>
-    </div>
+        </div>
 </template>
-
-<script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-import { useAuthUserStore } from '../stores/AuthUserStore';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import {
-    FwbCard,
-    FwbBadge,
-    FwbButton,
-} from 'flowbite-vue';
-
-// Referencias reactivas
-const tasksToday = ref([]);
-const tasksWeek = ref([]);
-const tasksTwoWeeks = ref([]);
-const tasksMonth = ref([]);
-const tasksYear = ref([]);
-
-// Store de usuario
-const authUserStore = useAuthUserStore();
-const user = authUserStore.user;
-
-// Método para obtener las tareas de hoy
-const getTasksToday = async () => {
-    try {
-        const response = await axios.get(`/web/get_tasks_today`);
-        tasksToday.value = response.data;
-    } catch (error) {
-        console.error('Error fetching tasks:', error);
-    }
-};
-
-// Método para obtener las tareas de la siguiente semana 
-const getTasksWeek = async () => {
-    try {
-        const response = await axios.get(`/web/get_tasks_week`);
-        tasksWeek.value = response.data;
-    } catch (error) {
-        console.error('Error fetching tasks:', error);
-    }
-};
-
-// Método para obtener las tareas de la siguiente semana 
-const getTasksTwoWeeks = async () => {
-    try {
-        const response = await axios.get(`/web/get_tasks_two_weeks`);
-        tasksTwoWeeks.value = response.data;
-    } catch (error) {
-        console.error('Error fetching tasks:', error);
-    }
-};
-
-// Método para obtener las tareas de la siguiente semana 
-const getTasksMonth = async () => {
-    try {
-        const response = await axios.get(`/web/get_tasks_month`);
-        tasksMonth.value = response.data;
-    } catch (error) {
-        console.error('Error fetching tasks:', error);
-    }
-};
-
-// Método para obtener las tareas de la siguiente semana 
-const getTasksYear = async () => {
-    try {
-        const response = await axios.get(`/web/get_tasks_year`);
-        tasksYear.value = response.data;
-    } catch (error) {
-        console.error('Error fetching tasks:', error);
-    }
-};
-
-// Llamada al método al montar el componente
-onMounted(() => {
-    getTasksToday();
-    getTasksWeek();
-    getTasksTwoWeeks();
-    getTasksMonth();
-    getTasksYear();
-});
-</script>

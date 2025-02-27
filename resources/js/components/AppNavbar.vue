@@ -9,7 +9,9 @@
                 </button>
                 <a class="flex ms-2 md:me-24">
                     <img :src="user.theme == 'dark' ? 'logow.webp' : 'logob.webp' " class="h-8 me-3" alt="FlowBite Logo" />
-                    <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Jolber Chirinos</span>
+                    <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
+                        Forever Us
+                    </span>
                 </a>
             </div>
             <div class="flex items-center">
@@ -30,6 +32,12 @@
                         </p>
                     </div>
                     <ul class="py-1" role="none">
+                        <li>
+                            <a @click="changePassword" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
+                                <font-awesome-icon :icon="['fas', 'unlock-alt']" />
+                                Cambiar mi contraseña
+                            </a>
+                        </li>
                         <li>
                             <a @click="changeTheme" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
                                 <font-awesome-icon :icon="user.theme == 'light' ? ['fas', 'moon'] : ['fas', 'sun']" />
@@ -71,7 +79,7 @@ const user = authUserStore.user;
 
 const logout = () => {
     axios.post('/logout').then((response) => {
-        authUserStore.user.name = '';
+        user.name = '';
         router.push('/login');
     });
 };
@@ -79,21 +87,25 @@ const logout = () => {
 const changeTheme = () => {
     axios.get('/web/change_theme').then((response) => {
 
-        authUserStore.user.theme = response.data.theme;
+        user.theme = response.data.theme;
 
         initTheme();
     });
 };
 
 const initTheme = () => {
-    authUserStore.user.theme 
+    user.theme 
 
-    if (authUserStore.user.theme == 'dark') {
+    if (user.theme == 'dark') {
         document.documentElement.classList.add('dark');
     } 
         
-    if (authUserStore.user.theme == 'light' || authUserStore.user.theme == null) {
+    if (user.theme == 'light' || user.theme == null) {
         document.documentElement.classList.remove('dark')
     }
+};
+
+const changePassword = () => {
+    console.log(user)
 };
 </script>

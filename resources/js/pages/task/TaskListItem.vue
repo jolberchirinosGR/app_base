@@ -9,16 +9,12 @@
     </fwb-table-cell>
 
     <fwb-table-cell>
-      {{  getDate(taskData.start_date) }}
+      {{ getDate(taskData.start_date) }}
     </fwb-table-cell>
-
-    <!-- <fwb-table-cell>
-      {{  getDate(taskData.end_date) }}
-    </fwb-table-cell> -->
 
     <fwb-table-cell>
       <div class="flex flex-wrap gap-1">
-        <fwb-badge  class="dark:text-white" size="sm" type="dark" v-for="(user, index) in taskData.users" :key="index">
+        <fwb-badge class="dark:text-white" size="sm" type="dark" v-for="(user, index) in taskData.users" :key="index">
           {{ user.name }}
         </fwb-badge>
       </div>
@@ -28,147 +24,64 @@
       <strong>
         <font-awesome-icon :class="getIconColor(taskData.status)" :icon="getIcon(taskData.status)" size="lg"/>
         <br>
-        {{getStatusName(taskData.status)}}
+        {{ getStatusName(taskData.status) }}
       </strong>
     </fwb-table-cell>
 
     <td class="px-6 py-4">
-      <fwb-button class="mr-2" gradient="blue" @click="editModalTask(taskData)">
+      <fwb-button class="m-2" gradient="green" @click="editModalTask(taskData)">
         <font-awesome-icon :icon="['fas', 'edit']"/>
         Detalles
       </fwb-button>
 
-      <fwb-button class="mr-2" gradient="red" @click="deleteModalTask(taskData)">
+      <fwb-button class="m-2" gradient="red" @click="deleteModalTask(taskData)">
         <font-awesome-icon :icon="['fas', 'trash']"/>
         Eliminar
       </fwb-button>
     </td>
   </fwb-table-row>
-
 </template>
-  
-<script>
+
+<script setup lang="ts">
+import { ref, watch } from 'vue';
+import type { Task } from '../../types/interfaces'; // Importamos la interfaz Task
+import { getIcon, getStatusName, getIconColor, getDate } from '../../types/useTaskUtils'; // Importamos las funciones
+
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-//Elementos del flowbite
+// Elementos del Flowbite
 import {
-  FwbA,
-  FwbTable,
-  FwbTableBody,
   FwbTableCell,
-  FwbTableHead,
-  FwbTableHeadCell,
   FwbTableRow,
   FwbButton,
   FwbBadge,
-} from 'flowbite-vue'
+} from 'flowbite-vue';
 
-  export default {
-    emits: ['open-update-task', 'open-delete-task'], //Eventos que se generan en este componente
-    
-    components: {
-      FwbA,
-      FwbTable,
-      FwbTableBody,
-      FwbTableCell,
-      FwbTableHead,
-      FwbTableHeadCell,
-      FwbTableRow,
-      FwbButton,
-      FwbBadge,
-    },
-    props: {
-      task: Object,
-    },
-    data() {
-      return {
-        taskData: this.task,
-        rolesAll: [],
-        statusAll: ['', '', '', ''],
-      };
-    },
-    created() {
-    },
-    watch: {
-      task(newTask) {
-        this.taskData = newTask;
-      },
-    },
-    methods: {
-      // Método para abrir el modal de edición
-        editModalTask(task) {
-          this.$emit('open-update-task', task);
-        },
+// Props
+const props = defineProps({
+  task: {
+    type: Object as () => Task, // Especificamos que `task` es de tipo `Task`
+    required: true,
+  },
+});
 
-      // Método para abrir el modal de eliminación
-        deleteModalTask(task) {
-          this.$emit('open-delete-task', task);
-        },
+// Data reactiva
+const taskData = ref<Task>(props.task);
 
-      //Obtener icono dependiendo el estatus
-        getIcon(status) {
-          switch (status) {
-            case 1:
-              return ['fas', 'sync-alt'];
-              break;
-          
-            case 2:
-              return ['fas', 'ban'];
-              break;
-          
-            case 3:
-              return ['fas', 'check-double'];
-              break;
-          
-            default:
-              return ['fas', 'hourglass'];
-              break;
-          }
-        },
+// Watch para actualizar `taskData` cuando cambia `props.task`
+watch(() => props.task, (newTask: Task) => {
+  taskData.value = newTask;
+});
 
-      //Obtener icono dependiendo el estatus
-        getStatusName(status) {
-          switch (status) {
-            case 1:
-              return 'En curso';
-              break;
-          
-            case 2:
-              return 'Cancelada';
-              break;
-          
-            case 3:
-              return 'Finalizado';
-              break;
-          
-            default:
-              return 'Por comenzar';
-              break;
-          }
-        },
+// Emit
+const emit = defineEmits(['open-update-task', 'open-delete-task']);
 
-      //Obtener icono dependiendo el estatus
-        getIconColor(status) {
-          switch (status) {
-            case 1:
-              return 'text-blue-700 dark:text-blue-400'; // Modo claro y oscuro
-            case 2:
-              return 'text-red-700 dark:text-red-400'; // Modo claro y oscuro
-            case 3:
-              return 'text-green-700 dark:text-green-400'; // Modo claro y oscuro
-            default:
-              return 'text-gray-700 dark:text-gray-400'; // Modo claro y oscuro
-          }
-        },   
+// Métodos
+const editModalTask = (task: Task) => {
+  emit('open-update-task', task);
+};
 
-      //Cambiar el formato de fecha a DD-MM-YY
-        getDate(date) {
-          const d = new Date(date);
-          const day = String(d.getDate()).padStart(2, '0'); // Ajusta el día a dos dígitos
-          const month = String(d.getMonth() + 1).padStart(2, '0'); // Ajusta el mes a dos dígitos
-          const year = d.getFullYear();
-          return `${day}-${month}-${year}`;
-        }    
-    },
-  };
+const deleteModalTask = (task: Task) => {
+  emit('open-delete-task', task);
+};
 </script>

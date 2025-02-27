@@ -56,7 +56,7 @@ class UserController extends BaseController
      */
     public function profile(Request $request)
     {
-        return $request->user()->only(['name', 'email', 'id_role', 'theme']);
+        return $request->user()->only(['id', 'name', 'email', 'id_role', 'theme']);
     }
 
     /**
@@ -88,7 +88,7 @@ class UserController extends BaseController
         $user = new User([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
-            'password' => $request->input('password'),
+            'password' => bcrypt($request->input('password')),
             'id_role' => $request->input('id_role') ?? 2, //Haciendo referencia a que es empleado
         ]);
 
@@ -111,7 +111,7 @@ class UserController extends BaseController
         $user->name = $request->input('name');
         $user->email = $request->input('email');
         if ($request->input('password')) {
-            $user->password = $request->input('password');
+            $user->password = bcrypt($request->input('password'));
         }
         $user->id_role = $request->input('id_role');
         $user->save();

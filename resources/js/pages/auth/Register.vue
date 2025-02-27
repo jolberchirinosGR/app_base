@@ -1,35 +1,3 @@
-<script setup>
-import axios from 'axios';
-import { reactive, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useAuthUserStore } from '../../stores/AuthUserStore';
-
-const authUserStore = useAuthUserStore();
-const router = useRouter();
-const form = reactive({
-    email: '',
-    password: '',
-});
-
-const loading = ref(false);
-
-const errorMessage = ref('');
-const handleSubmit = () => {
-    loading.value = true;
-    errorMessage.value = '';
-    axios.post('/login', form)
-        .then(() => {
-            router.push('/admin/');
-        })
-        .catch((error) => {
-            errorMessage.value = error.response.data.message;
-        })
-        .finally(() => {
-            loading.value = false;
-        });
-};
-</script>
-
 <template>
     <div class="register-box">
         <div class="card card-outline card-primary">
