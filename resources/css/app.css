@@ -13,3 +13,27 @@
         @apply block mb-2 text-sm font-medium text-gray-900 dark:text-white;
     }
 }
+
+/* Cargar estilos para el buscador */
+.autocomplete-results {
+    list-style-type: none;
+    padding: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  .autocomplete-results li {
+    cursor: pointer;
+    padding: 8px;
+  }
+
+  ul {
+    padding: 0;
+    list-style-type: none;
+  }
+
+  ul li {
+    margin-bottom: 5px;
+  }

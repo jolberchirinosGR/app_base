@@ -13,7 +13,7 @@
     </fwb-table-cell>
 
     <td class="px-6 py-4">
-      <fwb-button class="mr-2" gradient="blue" @click="editModalUser(userData)">
+      <fwb-button class="mr-2" gradient="green" @click="editModalUser(userData)">
         <font-awesome-icon :icon="['fas', 'edit']"/>
         Editar
       </fwb-button>
@@ -24,71 +24,40 @@
       </fwb-button>
     </td>
   </fwb-table-row>
-
 </template>
-  
-<script>
+
+<script setup>
+import { ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { getDate } from '../../types/useTaskUtils';
 
 //Elementos del flowbite
 import {
-  FwbA,
-  FwbTable,
-  FwbTableBody,
   FwbTableCell,
-  FwbTableHead,
-  FwbTableHeadCell,
   FwbTableRow,
   FwbButton,
 } from 'flowbite-vue'
 
-  export default {
-    emits: ['open-update-user', 'open-delete-user'], //Eventos que se generan en este componente
-    
-    components: {
-      FwbA,
-      FwbTable,
-      FwbTableBody,
-      FwbTableCell,
-      FwbTableHead,
-      FwbTableHeadCell,
-      FwbTableRow,
-      FwbButton,
-    },
-    props: {
-      user: Object,
-    },
-    data() {
-      return {
-        userData: this.user,
-        rolesAll: [],
-      };
-    },
-    created() {
-    },
-    watch: {
-      user(newUser) {
-        this.userData = newUser;
-      },
-    },
-    methods: {
-      // Método para abrir el modal de edición
-        editModalUser(user) {
-          this.$emit('open-update-user', user);
-        },
+// Propiedades y eventos
+const props = defineProps({
+  user: Object,
+});
 
-      // Método para abrir el modal de eliminación
-        deleteModalUser(user) {
-          this.$emit('open-delete-user', user);
-        },
-      //Obtener fecha en formato carbon
-        getDate(date) {
-          const d = new Date(date);
-          const day = String(d.getDate()).padStart(2, '0'); // Ajusta el día a dos dígitos
-          const month = String(d.getMonth() + 1).padStart(2, '0'); // Ajusta el mes a dos dígitos
-          const year = d.getFullYear();
-          return `${day}-${month}-${year}`;
-        }
-    },
-  };
+const emit = defineEmits(['open-update-user', 'open-delete-user']);
+
+const userData = ref(props.user);
+
+// Watcher para la propiedad 'user'
+watch(() => props.user, (newUser) => {
+  userData.value = newUser;
+});
+
+// Métodos
+const editModalUser = (user) => {
+  emit('open-update-user', user);
+};
+
+const deleteModalUser = (user) => {
+  emit('open-delete-user', user);
+};
 </script>

@@ -1,260 +1,190 @@
 <template>
-    <div class="block space-y-4 md:flex md:space-y-0 md:space-x-4 md:rtl:space-x-reverse" style="margin-bottom: 2%;">
-        <h1 class="text-gray dark:text-white text-xl font-bold">
-            <font-awesome-icon :icon="['fas', 'list-check']"/>
-            Listado de tareas
-        </h1>
+  <div class="block space-y-4 md:flex md:space-y-0 md:space-x-4 md:rtl:space-x-reverse items-center" style="margin-bottom: 2%;">
+      <h1 class="text-gray dark:text-white text-xl font-bold flex items-center">
+          <font-awesome-icon :icon="['fas', 'list-check']" class="mr-2"/>
+          Listado de tareas
+      </h1>
 
-        <fwb-button class="mr-2" gradient="green" @click="createModalTask()">
-          <font-awesome-icon :icon="['fas', 'plus']"/>
-          Nueva
-        </fwb-button>
+      <fwb-button gradient="blue" @click="openNewTask()" class="mr-2">
+        <font-awesome-icon :icon="['fas', 'plus']"/>
+        Nueva tarea
+      </fwb-button>
+      
+      <fwb-button gradient="cyan" @click="changeView()">
+        <font-awesome-icon :icon="['fa', 'columns']"/>
+        Mi panel de tareas
+      </fwb-button>
 
-        <fwb-dropdown text="Paginación">
-          <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200">
-            <li>
-              <div class="flex items-center">
-                  <input type="radio" v-model="paginationNumber" value="10">
-                  <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">10</label>
-              </div>
-            </li>
-            <li>
-              <div class="flex items-center">
-                  <input type="radio" v-model="paginationNumber" value="25">
-                  <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">25</label>
-              </div>
-            </li>
-            <li>
-              <div class="flex items-center">
-                  <input type="radio" v-model="paginationNumber" value="50">
-                  <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">50</label>
-              </div>
-            </li>
-            <li>
-              <div class="flex items-center">
-                  <input type="radio" v-model="paginationNumber" value="100">
-                  <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">100</label>
-              </div>
-            </li>
-          </ul>
-        </fwb-dropdown>
+      <fwb-dropdown text="Paginación" class="mr-2">
+        <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200">
+          <li>
+            <div class="flex items-center">
+                <input type="radio" v-model="paginationNumber" value="10">
+                <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">10</label>
+            </div>
+          </li>
+          <li>
+            <div class="flex items-center">
+                <input type="radio" v-model="paginationNumber" value="25">
+                <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">25</label>
+            </div>
+          </li>
+          <li>
+            <div class="flex items-center">
+                <input type="radio" v-model="paginationNumber" value="50">
+                <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">50</label>
+            </div>
+          </li>
+          <li>
+            <div class="flex items-center">
+                <input type="radio" v-model="paginationNumber" value="100">
+                <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">100</label>
+            </div>
+          </li>
+        </ul>
+      </fwb-dropdown>
+        
+      <fwb-input #prefix v-model="inputSearch" placeholder="Buscador..." class="mr-2">
+        <font-awesome-icon :icon="['fas', 'search']"/>
+      </fwb-input>
+  </div>
 
-        <fwb-input #prefix v-model="inputSearch" placeholder="Tarea o Descripción">
-          <font-awesome-icon :icon="['fas', 'search']"/>
-        </fwb-input>
-    </div>
+  <fwb-table>
+    <fwb-table-head>
+      <fwb-table-head-cell>Tarea</fwb-table-head-cell>
+      <fwb-table-head-cell>Descripción</fwb-table-head-cell>
+      <fwb-table-head-cell>Fecha Inicio</fwb-table-head-cell>
+      <!-- <fwb-table-head-cell>Fecha Fin</fwb-table-head-cell> -->
+      <fwb-table-head-cell>Usuarios</fwb-table-head-cell>
+      <fwb-table-head-cell>Estado <font-awesome-icon color="text-gray-900 dark:text-white" :icon="['fas', 'circle-info']" @click="showStatusInfo"/></fwb-table-head-cell>
+      <fwb-table-head-cell>Acciones</fwb-table-head-cell>
+    </fwb-table-head>
 
-    <fwb-table>
-      <fwb-table-head>
-        <fwb-table-head-cell>Tarea</fwb-table-head-cell>
-        <fwb-table-head-cell>Descripción</fwb-table-head-cell>
-        <fwb-table-head-cell>Fecha Inicio</fwb-table-head-cell>
-        <!-- <fwb-table-head-cell>Fecha Fin</fwb-table-head-cell> -->
-        <fwb-table-head-cell>Usuarios</fwb-table-head-cell>
-        <fwb-table-head-cell>Estado <font-awesome-icon color="text-gray-900 dark:text-white" :icon="['fas', 'circle-info']" @click="showDeleteConfirmation"/></fwb-table-head-cell>
-        <fwb-table-head-cell>Acciones</fwb-table-head-cell>
-      </fwb-table-head>
+    <fwb-table-body>
+      <TaskListItem v-for="(task, index) in tasks.data"
+        :key="task.id"
+        :task="task"
+        @open-update-task="openUpdateTask"
+        @open-delete-task="openDeleteTask"
+      />
+    </fwb-table-body>
+  </fwb-table>
 
-      <fwb-table-body>
-        <TaskListItem v-for="(task, index) in tasks.data"
-          :key="task.id"
-          :task=task
-          @open-update-task="updateModalTask"
-          @open-delete-task="deleteModalTask"
-        />
-      </fwb-table-body>
-    </fwb-table>
-
-    <nav class="w-full flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
-      <span class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
-        Viendo 
-        <span class="font-semibold text-gray-900 dark:text-white">
-          {{ tasks.from }}
-          -
-          {{ tasks.to }}
-        </span> 
-        de 
-        <span class="font-semibold text-gray-900 dark:text-white">
-          {{ tasks.total }}
-        </span>
+  <nav class="w-full flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
+    <span class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
+      Viendo 
+      <span class="font-semibold text-gray-900 dark:text-white">
+        {{ tasks.from }}
+        - 
+        {{ tasks.to }}
+      </span> 
+      de 
+      <span class="font-semibold text-gray-900 dark:text-white">
+        {{ tasks.total }}
       </span>
-      <fwb-pagination v-model="tasks.current_page" :total-pages="tasks.last_page" @page-changed="getTasks"  previous-label="<<<" next-label=">>>"></fwb-pagination>
-    </nav>
-
-    <!-- Modal -->
-    <task-modals ref="taskModals"
-        @reload-table="reloadTable"
-    />
+    </span>
+    <fwb-pagination v-model="tasks.current_page" :total-pages="tasks.last_page" @page-changed="getTasks" previous-label="<<<" next-label=">>>"></fwb-pagination>
+  </nav>
 </template>
 
-<script>
+<script setup>
+import { ref, watch, onMounted } from 'vue';
 import axios from 'axios';
 import { debounce } from 'lodash';
 import TaskListItem from './TaskListItem.vue';
-import TaskModals from './TaskModals.vue';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { useSweetAlert }  from '../../stores/Sweet.js';
+import { useSweetAlert } from '../../stores/Sweet';
 
-//Elementos del flowbite
+// Flowbite components
 import {
-  FwbA,
   FwbTable,
   FwbTableBody,
-  FwbTableCell,
   FwbTableHead,
   FwbTableHeadCell,
-  FwbTableRow,
   FwbButton,
   FwbPagination,
-  FwbSelect,
   FwbDropdown,
   FwbInput,
-} from 'flowbite-vue'
+} from 'flowbite-vue';
 
-export default {
-  components: {
-    TaskListItem,
-    TaskModals,
-    FwbA,
-    FwbTable,
-    FwbTableBody,
-    FwbTableCell,
-    FwbTableHead,
-    FwbTableHeadCell,
-    FwbTableRow,
-    FwbButton,
-    FwbPagination,
-    FwbSelect,
-    FwbDropdown,
-    FwbInput,
-  },
-  data() {
-    return {
-      //Objeto para la edicion
-      task: {
-        id: '',
-        name: '',
-        lastname: '',
-        dni: '',
-        email: '',
-        password: '',
-        confirm_password: '',
-        id_role: '',
+const tasks = ref([]);
+const inputSearch = ref('');
+const paginationNumber = ref(10);
+const currentPage = ref(1);
+const orderByColumn = ref('');
+const orderByType = ref('none');
+
+const emit = defineEmits(['change-view', 'open-new-task', 'open-update-task', 'open-delete-task']);
+
+const getTasks = async (page = currentPage.value) => {
+  try {
+    const response = await axios.get(`/web/tasks?page=${page}`, {
+      params: {
+        search: inputSearch.value,
+        pagination: paginationNumber.value,
+        order: orderByType.value,
+        column: orderByColumn.value,
       },
-      //Modales y titulos
-      id: 0,
-      update: false,
-      //Variables para comprobar los resultados y el total de los datos
-      roles: [],
-      tasks: [],
-      //Filtros para el listado
-      inputSearch: null,
-      roleSearch: null,
-      dateSearch: null,
-      //Generales
-      paginationNumber: 10,
-      paginationSelect: [
-        { value: '10', name: '10'},
-        { value: '25', name: '25'},
-        { value: '50', name: '50'},
-        { value: '100', name: '100'},
-      ],
-      orderByColumn: '',
-      orderByType: 'none', // none, asc, desc
-    };
-  },
-  methods: {
-    //Obtener todas los Usuarios
-    getTasks(page = 1) {
-        axios.get(`/web/tasks?page=${page}`, {
-            params: {
-                search: this.inputSearch,
-                role: this.roleSearch,
-                //Generales
-                pagination: this.paginationNumber,
-                order: this.orderByType,
-                column: this.orderByColumn,
-            },
-        }).then((response) => {
-            this.tasks = response.data;
-        });
-    },
-
-    //Obetener ordenación
-      sortBy(column) {
-        if (this.orderByColumn === column) {
-            if (this.orderByType === 'none') {
-                this.orderByType = 'asc';
-            } else if (this.orderByType === 'asc') {
-                this.orderByType = 'desc';
-            } else {
-                this.orderByType = 'none';
-                this.orderByColumn = '';
-            }
-        } else {
-            this.orderByColumn = column;
-            this.orderByType = 'asc';
-        }
-    },
-
-    // Método para abrir el modal de creación
-      createModalTask() {
-        this.$refs.taskModals.openFormModal(null);
-      },
-
-    // Método para abrir el modal de creación
-      updateModalTask(data) {
-        this.$refs.taskModals.openFormModal(data);
-      },
-
-    // Método para abrir el modal de creación
-      deleteModalTask(data) {
-        this.$refs.taskModals.openDeleteModal(data);
-      },
-
-    //Funcion para recargar la tabla
-      reloadTable(){
-        this.getTasks();
-      },
-
-    //vaciar filtro de fecha
-      dateSearchNull(){
-        this.dateSearch = null;
-      },
-
-      //activar 
-      showDeleteConfirmation() {
-        const swal = useSweetAlert();
-            
-        swal.fire({
-          title: "Estados de las tareas",
-          text: "Explicar los estados aqui",
-          icon: "info"
-        });
-      },
-  },
-  watch: {
-    inputSearch: debounce(function (newVal) {
-      this.getTasks();
-    }, 300),
-    paginationNumber: debounce(function () {
-      this.getTasks();
-    }, 300),
-    dateSearch: debounce(function () {
-      this.getTasks();
-    }, 300),
-    roleSearch: debounce(function () {
-      this.getTasks();
-    }, 300),
-    orderByType: debounce(function () {
-      this.getTasks();
-    }, 300),
-  },
-  created() {
-    this.getTasks();
-  },
-  mounted() {
-    initFlowbite();
+    });
+    tasks.value = response.data;
+  } catch (error) {
+    console.error('Error fetching tasks:', error);
   }
 };
+
+const sortBy = (column) => {
+  if (orderByColumn.value === column) {
+    if (orderByType.value === 'none') {
+      orderByType.value = 'asc';
+    } else if (orderByType.value === 'asc') {
+      orderByType.value = 'desc';
+    } else {
+      orderByType.value = 'none';
+      orderByColumn.value = '';
+    }
+  } else {
+    orderByColumn.value = column;
+    orderByType.value = 'asc';
+  }
+};
+
+const changeView = () => {
+    emit('change-view');
+};
+
+const openNewTask = () => {
+    emit('open-new-task');
+};
+
+const openUpdateTask = (data) => {
+    emit('open-update-task', data);
+};
+
+const openDeleteTask = (data) => {
+    emit('open-delete-task', data);
+};
+
+const reload = () => {
+  currentPage.value = 1;
+  getTasks(currentPage.value);
+};
+
+const showStatusInfo = () => {
+  const swal = useSweetAlert();
+  swal.fire({
+    title: 'Estados de las tareas',
+    text: 'Explicar los estados aquí',
+    icon: 'info',
+  });
+};
+
+//Metodos para actualizar, cargar de inicio y exportar a otros elementos 
+watch([paginationNumber, inputSearch, orderByType ], debounce(reload), 300);
+
+onMounted(() => {
+  getTasks();
+});
+
+defineExpose({
+  reload,
+});
 </script>

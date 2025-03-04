@@ -1,272 +1,132 @@
 <template>
-    <div class="block space-y-4 md:flex md:space-y-0 md:space-x-4 md:rtl:space-x-reverse" style="margin-bottom: 2%;">
-        <h1 class="text-gray dark:text-white text-xl font-bold">
-            <font-awesome-icon :icon="['fas', 'users']"/>
-            Listado de usuarios
-        </h1>
+  <div class="block space-y-4 md:flex md:space-y-0 md:space-x-4 md:rtl:space-x-reverse items-center" style="margin-bottom: 2%;">
+    <h1 class="text-gray dark:text-white text-xl font-bold flex items-center">
+      <font-awesome-icon :icon="['fas', 'users']" class="mr-2"/>
+      Listado de usuarios
+    </h1>
 
-        <fwb-button class="mr-2" gradient="green" @click="createModalUser()">
-          <font-awesome-icon :icon="['fas', 'plus']"/>
-          Nuevo
-        </fwb-button>
+    <fwb-button class="h-9" gradient="blue" @click="createModalUser">
+      <font-awesome-icon :icon="['fas', 'plus']"/>
+      Nuevo usuario
+    </fwb-button>
 
-        <fwb-dropdown text="Paginación">
-          <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200">
-            <li>
-              <div class="flex items-center">
-                  <input type="radio" v-model="paginationNumber" value="10">
-                  <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">10</label>
-              </div>
-            </li>
-            <li>
-              <div class="flex items-center">
-                  <input type="radio" v-model="paginationNumber" value="25">
-                  <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">25</label>
-              </div>
-            </li>
-            <li>
-              <div class="flex items-center">
-                  <input type="radio" v-model="paginationNumber" value="50">
-                  <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">50</label>
-              </div>
-            </li>
-            <li>
-              <div class="flex items-center">
-                  <input type="radio" v-model="paginationNumber" value="100">
-                  <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">100</label>
-              </div>
-            </li>
-          </ul>
-        </fwb-dropdown>
+    <fwb-dropdown text="Paginación">
+      <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200">
+        <li v-for="num in paginationOptions" :key="num.value">
+          <div class="flex items-center">
+            <input type="radio" v-model="paginationNumber" :value="num.value"/>
+            <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ num.name }}</label>
+          </div>
+        </li>
+      </ul>
+    </fwb-dropdown>
 
-        <fwb-dropdown text="Roles">
-          <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200">
-            <li  v-for="(role, index) in roles">
-              <div class="flex items-center">
-                  <input type="radio" v-model="roleSearch" :value="role.id">
-                  <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ role.name }}</label>
-              </div>
-            </li>
-            <li>
-              <div class="flex items-center">
-                  <input type="radio" v-model="roleSearch" value=null>
-                  <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                    Sin filtrar
-                  </label>
-              </div>
-            </li>
-          </ul>
-        </fwb-dropdown>
+    <fwb-dropdown text="Roles">
+      <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200">
+        <li v-for="role in roles" :key="role.id">
+          <div class="flex items-center">
+            <input type="radio" v-model="roleSearch" :value="role.id"/>
+            <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ role.name }}</label>
+          </div>
+        </li>
+        <li>
+          <div class="flex items-center">
+            <input type="radio" v-model="roleSearch" :value="null"/>
+            <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Sin filtrar</label>
+          </div>
+        </li>
+      </ul>
+    </fwb-dropdown>
 
-        <fwb-input #prefix v-model="inputSearch" placeholder="Buscador nombre o correo  ">
-          <font-awesome-icon :icon="['fas', 'search']"/>
-        </fwb-input>
-    </div>
+    <fwb-input #prefix v-model="inputSearch" placeholder="Buscador...">
+      <font-awesome-icon :icon="['fas', 'search']"/>
+    </fwb-input>
+  </div>
 
-    <fwb-table>
-      <fwb-table-head>
-        <fwb-table-head-cell>Nombre</fwb-table-head-cell>
-        <fwb-table-head-cell>Correo</fwb-table-head-cell>
-        <fwb-table-head-cell>Creado</fwb-table-head-cell>
-        <fwb-table-head-cell>Acciones</fwb-table-head-cell>
-      </fwb-table-head>
+  <fwb-table>
+    <fwb-table-head>
+      <fwb-table-head-cell>Nombre</fwb-table-head-cell>
+      <fwb-table-head-cell>Correo</fwb-table-head-cell>
+      <fwb-table-head-cell>Creado</fwb-table-head-cell>
+      <fwb-table-head-cell>Acciones</fwb-table-head-cell>
+    </fwb-table-head>
 
-      <fwb-table-body>
-        <UserListItem v-for="(user, index) in users.data"
-          :key="user.id"
-          :user=user
-          @open-update-user="updateModalUser"
-          @open-delete-user="deleteModalUser"
-        />
-      </fwb-table-body>
-    </fwb-table>
+    <fwb-table-body>
+      <UserListItem v-for="user in users.data" :key="user.id" :user="user" @open-update-user="updateModalUser" @open-delete-user="deleteModalUser"/>
+    </fwb-table-body>
+  </fwb-table>
 
-    <nav class="w-full flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
-      <span class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
-        Viendo 
-        <span class="font-semibold text-gray-900 dark:text-white">
-          {{ users.from }}
-          -
-          {{ users.to }}
-        </span> 
-        de 
-        <span class="font-semibold text-gray-900 dark:text-white">
-          {{ users.total }}
-        </span>
-      </span>
-      <fwb-pagination v-model="users.current_page" :total-pages="users.last_page" @page-changed="getUsers"  previous-label="<<<" next-label=">>>"></fwb-pagination>
-    </nav>
+  <nav class="w-full flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
+    <span class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
+      Viendo <span class="font-semibold text-gray-900 dark:text-white">{{ users.from }} - {{ users.to }}</span> de <span class="font-semibold text-gray-900 dark:text-white">{{ users.total }}</span>
+    </span>
+    <fwb-pagination v-model="users.current_page" :total-pages="users.last_page" @page-changed="getUsers" previous-label="<<<" next-label=">>>"/>
+  </nav>
 
-    <!-- Modal -->
-    <user-modals ref="userModals"
-        @reload-table="reloadTable"
-    />
+  <user-modals ref="userModals" @reload-table="reloadTable"/>
 </template>
 
-<script>
+<script setup lang="ts">
+import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 import { debounce } from 'lodash';
 import UserListItem from './UserListItem.vue';
 import UserModals from './UserModals.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-
-//Elementos del flowbite
+import { Role, User } from '../../types/interfaces';
 import {
-  FwbA,
-  FwbTable,
-  FwbTableBody,
-  FwbTableCell,
-  FwbTableHead,
-  FwbTableHeadCell,
-  FwbTableRow,
-  FwbButton,
-  FwbPagination,
-  FwbSelect,
-  FwbDropdown,
-  FwbInput,
-} from 'flowbite-vue'
+  FwbTable, FwbTableBody, FwbTableHead, FwbTableHeadCell, FwbButton,
+  FwbPagination, FwbDropdown, FwbInput
+} from 'flowbite-vue';
 
-export default {
-  components: {
-    UserListItem,
-    UserModals,
-    FwbA,
-    FwbTable,
-    FwbTableBody,
-    FwbTableCell,
-    FwbTableHead,
-    FwbTableHeadCell,
-    FwbTableRow,
-    FwbButton,
-    FwbPagination,
-    FwbSelect,
-    FwbDropdown,
-    FwbInput,
-  },
-  data() {
-    return {
-      //Objeto para la edicion
-      user: {
-        id: '',
-        name: '',
-        lastname: '',
-        dni: '',
-        email: '',
-        password: '',
-        confirm_password: '',
-        id_role: '',
-      },
-      //Modales y titulos
-      id: 0,
-      update: false,
-      //Variables para comprobar los resultados y el total de los datos
-      roles: [],
-      users: [],
-      //Filtros para el listado
-      inputSearch: null,
-      roleSearch: null,
-      dateSearch: null,
-      //Generales
-      paginationNumber: 10,
-      paginationSelect: [
-        { value: '10', name: '10'},
-        { value: '25', name: '25'},
-        { value: '50', name: '50'},
-        { value: '100', name: '100'},
-      ],
-      orderByColumn: '',
-      orderByType: 'none', // none, asc, desc
-    };
-  },
-  methods: {
-    //Obtener todas los Usuarios
-    getUsers(page = 1) {
-        axios.get(`/web/users?page=${page}`, {
-            params: {
-                search: this.inputSearch,
-                role: this.roleSearch,
-                //Generales
-                pagination: this.paginationNumber,
-                order: this.orderByType,
-                column: this.orderByColumn,
-            },
-        }).then((response) => {
-            this.users = response.data;
-        });
-    },
+const users = ref<any>({ data: [], from: 0, to: 0, total: 0, current_page: 1, last_page: 1 });
+const roles = ref<Role[]>([]);
+const inputSearch = ref<string | null>(null);
+const roleSearch = ref<string | null>(null);
+const paginationNumber = ref<number>(10);
+const orderByColumn = ref<string>('');
+const orderByType = ref<string>('none');
+const userModals = ref<InstanceType<typeof UserModals> | null>(null);
 
-    //Obetener ordenación
-      sortBy(column) {
-        if (this.orderByColumn === column) {
-            if (this.orderByType === 'none') {
-                this.orderByType = 'asc';
-            } else if (this.orderByType === 'asc') {
-                this.orderByType = 'desc';
-            } else {
-                this.orderByType = 'none';
-                this.orderByColumn = '';
-            }
-        } else {
-            this.orderByColumn = column;
-            this.orderByType = 'asc';
-        }
-    },
+const paginationOptions = [
+  { value: 10, name: '10' },
+  { value: 25, name: '25' },
+  { value: 50, name: '50' },
+  { value: 100, name: '100' }
+];
 
-    // Método para abrir el modal de creación
-      createModalUser() {
-        this.$refs.userModals.openFormModal(null);
-      },
-
-    // Método para abrir el modal de creación
-      updateModalUser(data) {
-        this.$refs.userModals.openFormModal(data);
-      },
-
-    // Método para abrir el modal de creación
-      deleteModalUser(data) {
-        this.$refs.userModals.openDeleteModal(data);
-      },
-
-    //Funcion para recargar la tabla
-      reloadTable(){
-        this.getUsers();
-      },
-
-    //vaciar filtro de fecha
-      dateSearchNull(){
-        this.dateSearch = null;
-      },
-
-    //Obtener todas los Roles
-      get_roles(){
-        axios.get('/web/roles').then((response) => {
-          this.roles = response.data;
-        })
-      },
-  },
-  watch: {
-    inputSearch: debounce(function (newVal) {
-      this.getUsers();
-    }, 300),
-    paginationNumber: debounce(function () {
-      this.getUsers();
-    }, 300),
-    dateSearch: debounce(function () {
-      this.getUsers();
-    }, 300),
-    roleSearch: debounce(function () {
-      this.getUsers();
-    }, 300),
-    orderByType: debounce(function () {
-      this.getUsers();
-    }, 300),
-  },
-  created() {
-    this.getUsers();
-    this.get_roles();
-  },
-  mounted() {
-    initFlowbite();
-  }
+const getUsers = async (page = 1) => {
+  const response = await axios.get(`/web/users?page=${page}`, {
+    params: { search: inputSearch.value, role: roleSearch.value, pagination: paginationNumber.value, order: orderByType.value, column: orderByColumn.value }
+  });
+  users.value = response.data;
 };
+
+const getRoles = async () => {
+  const response = await axios.get('/web/roles');
+  roles.value = response.data;
+};
+
+const createModalUser = () => {
+  userModals.value?.openFormModal(null);
+};
+
+const updateModalUser = (data: User) => {
+  userModals.value?.openFormModal(data);
+};
+
+const deleteModalUser = (data: User) => {
+  userModals.value?.openDeleteModal(data);
+};
+
+const reloadTable = () => {
+  getUsers();
+};
+
+watch([inputSearch, paginationNumber, roleSearch, orderByType], debounce(getUsers, 300));
+
+onMounted(() => {
+  getUsers();
+  getRoles();
+});
 </script>

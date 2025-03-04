@@ -15,6 +15,8 @@ class TaskController extends BaseController
      */
     public function index(Request $request)
     {
+        info($request);
+        
         $query = Task::query();
         $pagination = 10;
         $sortBy = $request->input('column');

@@ -1,6 +1,7 @@
-import Dashboard from './components/Dashboard.vue';
 import Login from './pages/auth/Login.vue';
-import Tasks from './pages/task/TaskList.vue';
+import Register from './pages/auth/Register.vue';
+import Dashboard from './components/Dashboard.vue';
+import Tasks from './pages/task/Task.vue';
 import Users from './pages/user/UserList.vue';
 import Game from './components/Game.vue';
 
@@ -9,6 +10,12 @@ export default [
         path: '/login',
         name: 'Login',
         component: Login,
+    },
+
+    {
+        path: '/register',
+        name: 'Register',
+        component: Register,
     },
 
     {
