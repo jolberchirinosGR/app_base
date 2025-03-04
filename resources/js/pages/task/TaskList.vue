@@ -5,19 +5,17 @@
           Listado de tareas
       </h1>
 
-      <fwb-button gradient="blue" @click="createModalTask()">
+      <fwb-button gradient="blue" @click="openNewTask()" class="mr-2">
         <font-awesome-icon :icon="['fas', 'plus']"/>
         Nueva tarea
       </fwb-button>
       
-      <router-link to="/my-tasks">
-        <fwb-button gradient="cyan">
-          <font-awesome-icon :icon="['fa', 'columns']"/>
-          Mi panel de tareas
-        </fwb-button>
-      </router-link>
+      <fwb-button gradient="cyan" @click="changeView()">
+        <font-awesome-icon :icon="['fa', 'columns']"/>
+        Mi panel de tareas
+      </fwb-button>
 
-      <fwb-dropdown text="Paginación">
+      <fwb-dropdown text="Paginación" class="mr-2">
         <ul class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200">
           <li>
             <div class="flex items-center">
@@ -46,7 +44,7 @@
         </ul>
       </fwb-dropdown>
         
-      <fwb-input #prefix v-model="inputSearch" placeholder="Buscador...">
+      <fwb-input #prefix v-model="inputSearch" placeholder="Buscador..." class="mr-2">
         <font-awesome-icon :icon="['fas', 'search']"/>
       </fwb-input>
   </div>
@@ -58,7 +56,7 @@
       <fwb-table-head-cell>Fecha Inicio</fwb-table-head-cell>
       <!-- <fwb-table-head-cell>Fecha Fin</fwb-table-head-cell> -->
       <fwb-table-head-cell>Usuarios</fwb-table-head-cell>
-      <fwb-table-head-cell>Estado <font-awesome-icon color="text-gray-900 dark:text-white" :icon="['fas', 'circle-info']" @click="showDeleteConfirmation"/></fwb-table-head-cell>
+      <fwb-table-head-cell>Estado <font-awesome-icon color="text-gray-900 dark:text-white" :icon="['fas', 'circle-info']" @click="showStatusInfo"/></fwb-table-head-cell>
       <fwb-table-head-cell>Acciones</fwb-table-head-cell>
     </fwb-table-head>
 
@@ -66,8 +64,8 @@
       <TaskListItem v-for="(task, index) in tasks.data"
         :key="task.id"
         :task="task"
-        @open-update-task="updateModalTask"
-        @open-delete-task="deleteModalTask"
+        @open-update-task="openUpdateTask"
+        @open-delete-task="openDeleteTask"
       />
     </fwb-table-body>
   </fwb-table>
@@ -87,11 +85,6 @@
     </span>
     <fwb-pagination v-model="tasks.current_page" :total-pages="tasks.last_page" @page-changed="getTasks" previous-label="<<<" next-label=">>>"></fwb-pagination>
   </nav>
-
-  <!-- Modal -->
-  <task-modals ref="taskModals"
-    @reload-table="reloadTable"
-  />
 </template>
 
 <script setup>
@@ -99,7 +92,6 @@ import { ref, watch, onMounted } from 'vue';
 import axios from 'axios';
 import { debounce } from 'lodash';
 import TaskListItem from './TaskListItem.vue';
-import TaskModals from './TaskModals.vue';
 import { useSweetAlert } from '../../stores/Sweet';
 
 // Flowbite components
@@ -120,7 +112,8 @@ const paginationNumber = ref(10);
 const currentPage = ref(1);
 const orderByColumn = ref('');
 const orderByType = ref('none');
-const taskModals = ref(null);
+
+const emit = defineEmits(['change-view', 'open-new-task', 'open-update-task', 'open-delete-task']);
 
 const getTasks = async (page = currentPage.value) => {
   try {
@@ -154,24 +147,28 @@ const sortBy = (column) => {
   }
 };
 
-const createModalTask = () => {
-  taskModals.value.openFormModal(null);
+const changeView = () => {
+    emit('change-view');
 };
 
-const updateModalTask = (data) => {
-  taskModals.value.openFormModal(data);
+const openNewTask = () => {
+    emit('open-new-task');
 };
 
-const deleteModalTask = (data) => {
-  taskModals.value.openDeleteModal(data);
+const openUpdateTask = (data) => {
+    emit('open-update-task', data);
 };
 
-const reloadTable = () => {
+const openDeleteTask = (data) => {
+    emit('open-delete-task', data);
+};
+
+const reload = () => {
   currentPage.value = 1;
   getTasks(currentPage.value);
 };
 
-const showDeleteConfirmation = () => {
+const showStatusInfo = () => {
   const swal = useSweetAlert();
   swal.fire({
     title: 'Estados de las tareas',
@@ -180,9 +177,14 @@ const showDeleteConfirmation = () => {
   });
 };
 
-watch([paginationNumber, inputSearch, orderByType ], debounce(reloadTable), 300);
+//Metodos para actualizar, cargar de inicio y exportar a otros elementos 
+watch([paginationNumber, inputSearch, orderByType ], debounce(reload), 300);
 
 onMounted(() => {
   getTasks();
+});
+
+defineExpose({
+  reload,
 });
 </script>

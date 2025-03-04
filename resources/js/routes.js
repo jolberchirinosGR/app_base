@@ -1,8 +1,7 @@
 import Login from './pages/auth/Login.vue';
 import Register from './pages/auth/Register.vue';
 import Dashboard from './components/Dashboard.vue';
-import Tasks from './pages/task/TaskList.vue';
-import MyTasks from './pages/task/MyTasks.vue';
+import Tasks from './pages/task/Task.vue';
 import Users from './pages/user/UserList.vue';
 import Game from './components/Game.vue';
 
@@ -35,12 +34,6 @@ export default [
         path: '/tasks',
         name: 'Tareas',
         component: Tasks,
-    },
-
-    {
-        path: '/my-tasks',
-        name: 'Mis tareas',
-        component: MyTasks,
     },
 
     {

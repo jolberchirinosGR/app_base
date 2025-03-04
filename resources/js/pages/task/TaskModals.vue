@@ -120,10 +120,10 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue';
 import axios from 'axios';
-import { debounce } from 'lodash';
 import flatPickr from 'vue-flatpickr-component';
-import { showSuccessMessage, showErrorGroupMessages } from '../../stores/Sweet';
+import { showSuccessMessage, showErrorGroupMessages, useSweetAlert } from '../../stores/Sweet';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { debounce } from 'lodash';
 
 // Elementos del flowbite
 import {
@@ -270,8 +270,9 @@ const saveTask = () => {
   axios.post('/web/tasks', data).then(() => {
     closeFormModal();
     showSuccessMessage('Tarea creada exitosamente!');
-    emit('reload-table');
+    emit('reload');
   }).catch(error => {
+    console.log(error);
     const errors = error.response.data.errors;
     showErrorGroupMessages(errors);
   });
@@ -294,7 +295,7 @@ const updateTask = () => {
   axios.put(`/web/tasks/${id.value}`, data).then(() => {
     closeFormModal();
     showSuccessMessage('Tarea actualizada exitosamente!');
-    emit('reload-table');
+    emit('reload');
   }).catch(error => {
     console.log(error);
     const errors = error.response.data.errors;
@@ -302,25 +303,52 @@ const updateTask = () => {
   });
 };
 
+const openDeleteModal = (taskData) => {
+  id.value = taskData.id;
+  showDeleteConfirmation();
+};
+
+const showDeleteConfirmation = () => {
+  const swal = useSweetAlert();
+
+  swal.fire({
+    title: '¿Estás seguro de eliminar?',
+    text: 'Esta acción eliminará permanentemente la tarea y no podrá ser recuperada.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    confirmButtonText: '<i class="fas fa-trash"></i> Eliminar', // Icono de papelera en el botón de confirmación
+    cancelButtonColor: '#888',
+    cancelButtonText: '<i class="fas fa-times"></i> Cancelar', // Icono de "X" en el botón de cancelación
+  }).then((result) => {
+    if (result.isConfirmed) {
+      deleteTask();
+    }
+  });
+};
+
 const deleteTask = () => {
   axios.delete(`/web/tasks/${id.value}`).then(() => {
     showSuccessMessage('¡Tarea eliminada exitosamente!');
-    emit('reload-table');
+    emit('reload');
   }).catch(error => {
     const errors = error.response.data.errors;
     showErrorGroupMessages(errors);
   });
 };
 
-const emit = defineEmits(['reload-table']);
+const emit = defineEmits(['reload']);
 
 onMounted(() => {
   getUsers();
 });
 
+watch(inputSearch, debounce(getUsers), 300);
+
 // Exponer métodos
 defineExpose({
   openFormModal,
+  openDeleteModal,
   closeFormModal,
   saveTask,
   updateTask,

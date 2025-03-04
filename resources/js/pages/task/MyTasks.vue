@@ -1,6 +1,21 @@
 <template>
-    <div class="grid grid-cols-5 gap-4 mb-4">
-        <!-- Listado de las tareas -->
+    <h1 class="text-gray dark:text-white text-xl font-bold flex items-center">
+        <font-awesome-icon :icon="['fa', 'columns']" class="m-2"/>
+        Panel de tareas
+    </h1>
+
+    <fwb-button gradient="blue" class="m-2" @click="openNewTask()">
+        <font-awesome-icon :icon="['fas', 'plus']"/>
+        Nueva tarea
+    </fwb-button>
+      
+    <fwb-button gradient="cyan" @click="changeView()">
+        <font-awesome-icon :icon="['fa', 'list']"/>
+        Ver Listados
+    </fwb-button>
+        
+    <div class="grid grid-cols-5 gap-4 mb-4 mt-5">
+        <!-- Hoy -->
         <fwb-card>
             <div class="p-5">
                 <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -162,12 +177,7 @@ import axios from 'axios';
 import { ref, onMounted } from 'vue';
 import { useAuthUserStore } from '../../stores/AuthUserStore';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import {
-    FwbCard,
-    FwbBadge,
-    FwbButton,
-    FwbSpinner,
-} from 'flowbite-vue';
+import { FwbCard, FwbBadge, FwbButton, FwbSpinner } from 'flowbite-vue';
 
 // Referencias reactivas
 const tasksToday = ref([]);
@@ -183,9 +193,7 @@ const twoWeekLoading = ref(true);
 const monthLoading = ref(true);
 const yearLoading = ref(true);
 
-// Store de usuario
-const authUserStore = useAuthUserStore();
-const user = authUserStore.user;
+const emit = defineEmits(['change-view', 'open-new-task', 'open-update-task', 'open-delete-task']);
 
 // Método para obtener las tareas de hoy
 const getTasksToday = async () => {
@@ -214,6 +222,7 @@ const getTasksWeek = async () => {
     }
 };
 
+// Método para obtener las tareas de la siguiente 2 semanas
 const getTasksTwoWeeks = async () => {
     twoWeekLoading.value = true; // Inicia la carga
 
@@ -227,6 +236,7 @@ const getTasksTwoWeeks = async () => {
     }
 };
 
+// Método para obtener las tareas del siguiente mes
 const getTasksMonth = async () => {
     monthLoading.value = true; // Inicia la carga
 
@@ -240,6 +250,7 @@ const getTasksMonth = async () => {
     }
 };
 
+// Método para obtener las siguientes 
 const getTasksYear = async () => {
     yearLoading.value = true; // Inicia la carga
 
@@ -253,12 +264,37 @@ const getTasksYear = async () => {
     }
 };
 
-// Llamada al método al montar el componente
-onMounted(() => {
+//Eventos emitidos y funcion para recargar
+const openNewTask = () => {
+    emit('open-new-task');
+};
+
+const openUpdateTask = (data) => {
+    emit('open-update-task', data);
+};
+
+const openDeleteTask = (data) => {
+    emit('open-delete-task', data);
+};
+
+const changeView = () => {
+    emit('change-view');
+};
+
+//Metodos para actualizar, cargar de inicio y exportar a otros elementos 
+const reload = async () => {
     getTasksToday();
     getTasksWeek();
     getTasksTwoWeeks();
     getTasksMonth();
     getTasksYear();
+};
+
+onMounted(() => {
+    reload();
+});
+
+defineExpose({
+  reload,
 });
 </script>
